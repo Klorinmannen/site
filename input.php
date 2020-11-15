@@ -14,13 +14,7 @@ class signup
     private $_name_pattern;  
     private $_email_filter;
     
-    public const PASSWORD_DEFAULT_SECRET = 'n+nbPHLm/mVi0Doz';
-    public const PASSWORD_DEFAULT_SECRET_LENGTH_THRESHOLD = 20;    
-    public const PASSWORD_DEFAULT_USE_SECRET = true;    
-    
     private $_password_secret;
-    private $_password_use_secret;
-    private $_password_secret_length_threshold;
     private $_password_hash_algorithm;
     private $_password_hash_options;
     
@@ -45,14 +39,11 @@ class signup
     {
         $this->_name_pattern = '/[\w]+/';        
         $this->_email_filter = \FILTER_VALIDATE_EMAIL;
-
-        $this->_password_secret = self::PASSWORD_DEFAULT_SECRET;
-        $this->_password_use_secret = self::PASSWORD_DEFAULT_USE_SECRET;
-        $this->_password_secret_length_threshold = self::PASSWORD_DEFAULT_SECRET_LENGTH_THRESHOLD;
         
         $this->_password_hash_algorithm = \PASSWORD_DEFAULT;
         $this->_password_hash_options = [ 'cost' => 10 ];
-        
+
+        $this->_password_secret = '';
         $this->_password_pattern_any = '/[\w]+/';
         $this->_password_pattern_length = '/.{8,}/';
         $this->_password_pattern_nbr = '/[0-9]+/';
@@ -70,21 +61,12 @@ class signup
     public function set_password_field(string $password_field) { $this->_password_field = $password_field; }
     public function get_password_field() { return $this->_password_field; }
         
-    public function set_password_secret(string $password_secret) { $this->_password_secret = $password_secret; }
-    public function get_password_secret() { return $this->_password_secret; }
-    
-    public function set_use_password_secret(bool $use_password_secret) { $this->_use_password_secret = $use_password_secret; }
-    public function get_use_password_secret() { return $this->_use_password_secret; }
-    
-    public function set_password_secret_length_threshold(int $threshold) { $this->_password_secret_length_threshold = $threshold; } 
-    public function get_password_secret_length_threshold() { return $this->_password_secret_length_threshold; }
-
     public function set_password_any_pattern(string $password_pattern) { $this->_password_pattern_any = $password_pattern; }
     public function set_password_length_pattern(string $password_pattern) { $this->_password_pattern_length = $password_pattern; }
-    public function set_password_lcc_pattern(string $password_pattern_lcc) { $this->_password_pattern_lcc = $password_pattern; }
-    public function set_password_ucc_pattern(string $password_pattern_ucc) { $this->_password_pattern_ucc = $password_pattern; }
-    public function set_password_nbr_pattern(string $password_pattern_nbr) { $this->_password_pattern_nbr = $password_pattern; }
-    public function set_password_sc_pattern(string $password_pattern_sc) { $this->_password_pattern_sc = $password_pattern; }    
+    public function set_password_lcc_pattern(string $password_pattern) { $this->_password_pattern_lcc = $password_pattern; }
+    public function set_password_ucc_pattern(string $password_pattern) { $this->_password_pattern_ucc = $password_pattern; }
+    public function set_password_nbr_pattern(string $password_pattern) { $this->_password_pattern_nbr = $password_pattern; }
+    public function set_password_sc_pattern(string $password_pattern) { $this->_password_pattern_sc = $password_pattern; }    
     public function get_password_patterns()
     {
         return [ 'any' => $this->_password_pattern_any,
@@ -95,10 +77,10 @@ class signup
                  'sc' => $this->_password_pattern_sc ];
     }
 
-    public function set_password_hash_algorithm(string $password_hash_algorithm) { $this->_password_hash_algorithm = $password_hash_algorithm; }
+    public function set_password_hash_algorithm(string $algorithm) { $this->_password_hash_algorithm = $algorithm; }
     public function get_password_hash_algorithm() { return $this->_password_hash_algorithm; }
 
-    public function set_password_hash_options(array $password_hash_options) { $this->_password_hash_options = $password_hash_options; }
+    public function set_password_hash_options(array $options) { $this->_password_hash_options = $options; }
     public function get_password_hash_options() { return $this->_password_hash_options; }        
     
     public function get_inputs()
@@ -171,13 +153,12 @@ class signup
 
     private function treat_password($password)
     {        
-        if ($this->_use_password_secret)
-            if ($this->_password_secret_length_threshold > strlen($password))
-                $password = self::add_secret_to_password($password);
+        if ($this->_password_secret)
+            return null;
         return self::hash_password($password);
     }
     
-    private function add_secret_to_password($password, $secret)
+    private function add_secret_to_password($password)
     {
         return $password.$this->_password_secret;
     }
