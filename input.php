@@ -153,16 +153,12 @@ class signup
 
     private function treat_password($password)
     {        
+        // Todo: add secret
         if ($this->_password_secret)
             return null;
         return self::hash_password($password);
     }
-    
-    private function add_secret_to_password($password)
-    {
-        return $password.$this->_password_secret;
-    }
-    
+        
     private function hash_password($password)
     {
         return password_hash($password, $this->_password_hash_algorithm, $this->_password_hash_options);
