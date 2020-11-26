@@ -3,31 +3,38 @@ namespace user;
 
 class input
 {
-    public const USERNAME_DEFAULT_HTML_FIELD = 'username';
-    public const PASSWORD_DEFAULT_HTML_FIELD = 'password';
+    public const USERNAME_DEFAULT_HTML_NAME = 'username';
+    public const PASSWORD_DEFAULT_HTML_NAME = 'password';
 
-    protected $_username_field;
-    protected $_password_field;
+    public const SECRET_HASH_METHOD = 'sha256';
+    
+    protected $_html_username_name;
+    protected $_html_password_name;
 
-    public function __construct($username_field = self::USERNAME_DEFAULT_HTML_FIELD,
-                                $password_field = self::PASSWORD_DEFAULT_HTML_FIELD)
+    protected $_password_secret = 'iOYoJQ+qldvTZDCSweGJP/p8YAU=';
+    
+    public function __construct($html_username_name = self::USERNAME_DEFAULT_HTML_NAME,
+                                $html_password_name = self::PASSWORD_DEFAULT_HTML_NAME)
     {
-        $this->_username_field = $username_field;
-        $this->_password_field = $password_field;
+        $this->_html_username_name = $html_username_name;
+        $this->_html_password_name = $html_password_name;
     }
 
-    public function set_username_field(string $username_field) { $this->_username_field = $username_field; }
-    public function get_username_field() { return $this->_username_field; }
-    
-    public function set_password_field(string $password_field) { $this->_password_field = $password_field; }
-    public function get_password_field() { return $this->_password_field; }
-    
-    protected function get_input_field($input_field)
+    public function set_html_username_name(string $html_username_name) { $this->_html_username_name = $html_username_name; }
+    public function set_html_password_name(string $html_password_name) { $this->_html_password_name = $html_password_name; }
+
+    protected function get_input_name($input_name)
     {
-        if (!isset($_REQUEST[$input_field]))
+        if (!isset($_REQUEST[$input_name]))
             return false;
-        if (!$field = $_REQUEST[$input_field])
+        if (!$name = $_REQUEST[$input_name])
             return false;
-        return $field;
+        return $name;
     }    
+
+    protected function hash_password_with_secret($password)
+    {
+        $password_with_secret = sprintf('%s%s', $password, $this->_password_secret);
+        return hash(self::SECRET_HASH_METHOD, $password_with_secret);
+    }
 }
