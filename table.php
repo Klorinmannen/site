@@ -30,8 +30,8 @@ class table
     private $_records;
     private $_fields;
     private $_params;
-    private $_validator;
-
+    private $_where_fields;
+    
     // $table = RealDatabaseTableName
     public function __construct($table = null)
     {
@@ -44,8 +44,10 @@ class table
         $this->_records = null;
         $this->_fields = null;
         $this->params = null;
+        $this->_where_fields = null;
 
-        $this->_validator = new \Validator();
+        if (isset($GLOBALS['pdo']))
+            self::set_pdo($GLOBALS['pdo']);
     }
 
     public function set_pdo($pdo)
@@ -53,39 +55,29 @@ class table
         $this->_pdo = $pdo;
     }
 
-    public function set_select_fields($fields)
-    {
-        $this->_select = $fields;
-    }
-
     public function set_where_fields($fields)
     {
-        $this->_where = $fields;
+        $this->_where_fields = $fields;
     }
 
-    // Returns records = [ 0  => [ 'RealDatabaseFieldName' => its value ] ]
-    public function get(int $primary_id = null)
+    // Assuming $fields =  [ 'RealTableFieldName', 'AnotherRealTableFieldName' ]
+    // Returns records = [ 0  => [ 'RealTableFieldName' => its value ] ]
+    public function select(array $fields = null)
     {
-        if ($this->_validator->validate_id($primary_id))
-            $this->_primary_id = $primary_id;
-        if (!$this->_pdo)
-            throw new \Exception('Missing pdo');
-        if (!$this->_table)
-            throw new \Exception('Missing table');
-
-        self::create_get_sql();
+        self::create_select_fields_and_params($fields);
+        self::create_select_sql();
         self::make_query();
         self::set_records();
 
         return $this->_records;
     }
 
-    // Assuming $fields =  [ 'RealDatabaseFieldName' => its value ]
+    // Assuming $fields =  [ 'RealTableFieldName' => its value ]
     public function update(array $fields)
     {
         if (!$fields)
             throw new \Exception('Missing fields');
-
+        
         self::create_update_fields_and_params($fields);
         self::create_update_sql($fields);
         self::make_query();
@@ -93,7 +85,7 @@ class table
         return true;
     }
 
-    // Assuming $fields = [ 'RealDatabaseFieldName' => its value ]
+    // Assuming $fields = [ 'RealTableFieldName' => its value ]
     public function insert(array $fields)
     {
         if (!$fields)
@@ -103,7 +95,19 @@ class table
         self::create_insert_sql($fields);
         self::make_query();
 
-        return true;
+        return $pdo->lastInsertId;
+    }
+
+    private function create_select_fields_and_params($fields)
+    {
+        $this->_select = static::DEFAULT_SELECT;
+        if ($fields)
+            if (is_array($fields))
+                $this->_select = implode(', ', $fields);
+            else
+                $this->_select =  $fields;
+
+        self::set_where();
     }
     
     private function create_update_fields_and_params($fields)
@@ -113,8 +117,28 @@ class table
             $this->_fields[] = sprintf('%s = :%s', $db_field, $value_field);
             $this->_params[$value_field] = $value;
         }
+
+        self::set_where();
     }
 
+    private function set_where()
+    {
+        $where = '';
+        if ($this->_where_fields) {
+            if (is_array($this->_where_fields)) {
+                $where_parts = [];
+                foreach ($this->_where_fields as $field => $value) {
+                    $value_field = self::get_value_field($field);
+                    $field_parts[] =sprintf('%s = :%s', $field, $value_field);                    
+                    $this->_params[$value_field] = $value;
+                }            
+                $where .= implode(' AND ', $where_parts);
+            } else
+                $where .= $this->_where_fields;
+        }        
+        $this->_where = $where;
+    }
+    
     private function create_insert_fields_and_params($fields)
     {
         foreach ($fields as $db_field => $value) {
@@ -124,7 +148,7 @@ class table
             $this->_params[$value_field] = $value;
         }
     }
-
+    
     // A need to normalize / generate a parameter name
     private function get_value_field($field)
     {
@@ -149,16 +173,10 @@ class table
 
     private function create_update_sql($fields)
     {        
-        $this->_sql = sprintf('UPDATE %s SET %s',
+        $this->_sql = sprintf('UPDATE %s SET %s %s',
                               $this->_table,
-                              implode(', ', $this->_fields));
-        if ($this->_where)
-            if (is_array($this->_where))
-                $this->_sql .= sprintf(' WHERE %s',
-                                       implode(' AND ', $this->_where));
-            else
-                $this->_sql .= sprintf(' WHERE %s',
-                                       $this->_where);                                                       
+                              implode(', ', $this->_fields),
+                              $this->_where);
     }
 
     private function create_insert_sql($fields)
@@ -167,33 +185,14 @@ class table
                               $this->_table,
                               implode(', ', $this->_fields),
                               implode(', ', $this->_values));
+        
     }
     
-    private function create_get_sql()
+    private function create_select_sql()
     {
-        $select = sprintf('SELECT %s', static::DEFAULT_SELECT);
-        if ($this->_select)
-            if (is_array($this->_select))
-                $select = sprintf('SELECT %s', implode(', ', $this->_select));
-            else
-                $select = sprintf('SELECT %s', $this->_select);
-        
-        $from = sprintf(' FROM %s', $this->_table);
-
-        $where_parts = [];
-        if ($this->_where)
-            if (is_array($this->_where))
-                $where_parts[] = implode(' AND ', $this->_where);
-            else
-                $where_parts[] = $this->_where;
-        
-        if ($this->_primary_id)
-            $where_parts[] = sprintf('%sID = %d', $this->_table, $this->_primary_id);
-
-        $where = '';
-        if ($where_parts)
-            $where  = sprintf(' WHERE %s', implode(' AND ', $where_parts));
-
-        $this->_sql = sprintf('%s %s %s', $select, $from, $where);
+        $this->_sql = sprintf('SELECT %s FROM %s %s',
+                              $this->_sql,
+                              $this->_table,
+                              $this->_where);
     }
 }
