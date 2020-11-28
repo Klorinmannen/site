@@ -1,5 +1,5 @@
 <?php
-namespace user;
+namespace uitl\user;
 
 class input
 {

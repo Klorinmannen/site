@@ -1,5 +1,5 @@
 <?php
-namespace user;
+namespace util\user;
 
 class sign_up extends input
 {
