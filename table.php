@@ -125,6 +125,7 @@ class table
     {
         $where = '';
         if ($this->_where_fields) {
+            $where = 'WHERE ';
             if (is_array($this->_where_fields)) {
                 $where_parts = [];
                 foreach ($this->_where_fields as $field => $value) {
