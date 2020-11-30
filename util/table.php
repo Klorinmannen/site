@@ -127,13 +127,13 @@ class table
         if ($this->_where_fields) {
             $where = 'WHERE ';
             if (is_array($this->_where_fields)) {
-                $where_parts = [];
+                $field_parts = [];
                 foreach ($this->_where_fields as $field => $value) {
                     $value_field = self::get_value_field($field);
                     $field_parts[] =sprintf('%s = :%s', $field, $value_field);                    
                     $this->_params[$value_field] = $value;
                 }            
-                $where .= implode(' AND ', $where_parts);
+                $where .= implode(' AND ', $field_parts);
             } else
                 $where .= $this->_where_fields;
         }        
