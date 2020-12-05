@@ -1,5 +1,5 @@
 <?php
-namespace util\user;
+namespace user;
 
 class sign_up extends input
 {
@@ -19,6 +19,7 @@ class sign_up extends input
     private $_password_pattern_lcc;
     private $_password_pattern_ucc;
     private $_password_pattern_sc;
+    private $_password_exception_msg;
     
     public function __construct( $html_email_name = self::EMAIL_DEFAULT_HTML_NAME,
                                  $html_username_name,
@@ -42,7 +43,11 @@ class sign_up extends input
         $this->_password_pattern_nbr = '/[0-9]+/';
         $this->_password_pattern_lcc = '/[a-z]+/';
         $this->_password_pattern_ucc = '/[A-Z]+/';
-        $this->_password_pattern_sc = '/[^\w]+|[_]+/';        
+        $this->_password_pattern_sc = '/[^\w]+|[_]+/';
+        
+        $this->_password_exception_msg = 'The password must be 8 characters long.';
+        $this->_password_exception_msg .= '\nContain one upper and lower case character.';
+        $this->_password_exception_msg .= '\nOne special case character and one number';
     }
 
     public function set_html_email_name(string $html_email_name) { $this->_html_email_name = $html_email_name; }            
@@ -71,7 +76,9 @@ class sign_up extends input
         if (! self::validate_username($username))
             throw new \Exception('Invalid username');
 
-        self::validate_password($password);
+        if (! self::validate_password($password))
+            throw new \Exception($this->_password_exception_msg);
+        
         if (!$password = self::treat_password($password))
             return false;
         
@@ -93,17 +100,18 @@ class sign_up extends input
     private function validate_password($password)
     {
         if (! self::match_pattern($this->_password_pattern_any, $password))
-            throw new \Exception('Invalid password, cannot be empty');
+            return false;
         if (! self::match_pattern($this->_password_pattern_length, $password))
-            throw new \Exception('Invalid password, must have atleast 8 characters');
+            return false;
         if (! self::match_pattern($this->_password_pattern_nbr, $password))
-            throw new \Exception('Invalid password, must have a number');
+            return false;
         if (! self::match_pattern($this->_password_pattern_lcc, $password))
-            throw new \Exception('Invalid password, must have a lower case character');
+            return false;
         if (! self::match_pattern($this->_password_pattern_ucc, $password))
-            throw new \Exception('Invalid password, must have a upper case character');        
+            return false;
         if (! self::match_pattern($this->_password_pattern_sc, $password))
-            throw new \Exception('Invalid password, must have a special case character');        
+            return false;
+
         return true;
     }
     

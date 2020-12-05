@@ -12,9 +12,6 @@ class table
 
       where fields can be either an array [ 'RealDatabaseFieldName = SomeValue' ]
       or a well formated sql string without a WHERE statement.
-
-      get with primary id will assume that the primary key field is $this->_table + ID
-      i.e RealDatabaseTableNameID
       
      */
     
@@ -45,9 +42,6 @@ class table
         $this->_fields = null;
         $this->params = null;
         $this->_where_fields = null;
-
-        if (isset($GLOBALS['pdo']))
-            self::set_pdo($GLOBALS['pdo']);
     }
 
     public function set_pdo($pdo)
@@ -62,13 +56,13 @@ class table
 
     // Assuming $fields =  [ 'RealTableFieldName', 'AnotherRealTableFieldName' ]
     // Returns records = [ 0  => [ 'RealTableFieldName' => its value ] ]
-    public function select(array $fields = null)
+    public function select($fields = null)
     {
         self::create_select_fields_and_params($fields);
         self::create_select_sql();
         self::make_query();
         self::set_records();
-
+        
         return $this->_records;
     }
 
@@ -98,6 +92,11 @@ class table
         return $pdo->lastInsertId;
     }
 
+    public function get_records()
+    {
+        return $this->_records;
+    }
+    
     private function create_select_fields_and_params($fields)
     {
         $this->_select = static::DEFAULT_SELECT;
@@ -159,7 +158,7 @@ class table
         
     private function make_query()
     {
-        if (!$this->_query = $this->_pdo->prepare($this->_sql))
+        if (!$this->_query = \util\pdo()->prepare($this->_sql))
             throw new \Exception('Failed to prepare query');
         if (!$this->_query->execute($this->_params))
             throw new \Exception('Failed to execute query');
@@ -170,30 +169,30 @@ class table
         $this->_records = [];
         while ($record = $this->_query->fetch())
             $this->_records[] = $record;
-    }
-
+    }    
+    
     private function create_update_sql($fields)
     {        
-        $this->_sql = sprintf('UPDATE %s SET %s %s',
-                              $this->_table,
-                              implode(', ', $this->_fields),
-                              $this->_where);
+        $this->_sql = sprintf( 'UPDATE %s SET %s %s',
+                               $this->_table,
+                               implode(', ', $this->_fields),
+                               $this->_where );
     }
 
     private function create_insert_sql($fields)
     {
-        $this->_sql = sprintf('INSERT INTO %s ( %s ) VALUES ( %S )',
-                              $this->_table,
-                              implode(', ', $this->_fields),
-                              implode(', ', $this->_values));
+        $this->_sql = sprintf( 'INSERT INTO %s ( %s ) VALUES ( %S )',
+                               $this->_table,
+                               implode(', ', $this->_fields),
+                               implode(', ', $this->_values) );
         
     }
     
     private function create_select_sql()
     {
-        $this->_sql = sprintf('SELECT %s FROM %s %s',
-                              $this->_sql,
-                              $this->_table,
-                              $this->_where);
+        $this->_sql = sprintf( 'SELECT %s FROM %s %s',
+                               $this->_select,
+                               $this->_table,
+                               $this->_where );
     }
 }
