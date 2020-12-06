@@ -1,0 +1,220 @@
+
+/* Old */
+.material_icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+.debug {
+    border: 1px solid red;
+}
+
+.modal {
+    margin:0px;
+    padding:0px;
+    display:flex;
+    width:100%;
+    height:100%;
+    position:absolute;
+    justify-content:center;
+    flex-wrap:wrap;
+    align-item:center;
+    top: 0;
+    left: 0;
+}
+
+.modal_background {
+    position:inherit;
+    height:inherit;
+    width:inherit;
+    z-index: 0;
+    /*filter:blur(200px);*/
+    opacity: 0.9 !important;
+    background-color: gray;
+}
+
+.modal_content {
+    position: relative;
+    z-index: 1;
+    width: fit-content;
+    height: fit-content;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+.modal_box {
+    width: 350px;
+    margin:20px;
+    padding: 0;
+    display:block;
+}
+
+.button:hover, .button_modal:hover {
+    opacity: 0.8;
+}
+
+.full_screen_div {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.no_margin {
+    margin: 0px;
+}
+
+.no_padding {
+    padding: 0px;
+}
+
+.no_border {
+    border: none;
+}
+
+.border_radius {
+    border-radius: 5px;
+}
+
+.box_padding_top {
+    padding-top: 15px;
+}
+
+.space_top {
+    padding-top: 10px;
+}
+
+.label_padding {
+    padding-top: 3px;
+}
+
+.text_center {
+    text-align: center;
+}
+
+.text_right {
+    text-align: right;
+}
+
+.header, .modal_header, .label, .input, .button, .signup_button, .button_modal, .link, .bg_color {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg_color, .modal_header {
+    background-color: rgb(54, 111, 245);
+    color: white;
+}
+
+.header {
+    padding-bottom: 10px;
+}
+
+.label, .link {
+    font-weight: bold;
+}
+
+.button, .signup_button, .button_modal, .input, .link, .modal_header {
+    font-size: 18px;
+}
+
+.button, .signup_button, .button_modal, .input, .modal_header {
+    height: 37px;
+}
+
+.modal_header {
+    margin: 0px;
+    padding: 0px;
+    place-items: center;
+}
+
+.button, .signup_button, .button_modal {
+    width: 100px;
+    color: white;
+    background-color: rgb(54, 111, 245);
+}
+
+.max_width, .signup_button, .button_modal {
+    width: 100%;
+}
+
+.input {
+    width: 250px;
+    padding-left: 5px;
+}
+
+.icon_input {
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.link {
+    text-decoration:none;
+    color:rgb(54, 111, 245);
+}
+
+.grid, .grid_center, .grid_buttons, .grid_nav, .grid_add_pokemon_nav, .grid_modal_center {
+    display: grid;
+}
+
+.grid_center {
+    place-items: center;
+}
+
+.grid_buttons {
+    grid-template-columns: repeat(2, 1fr);
+    padding-top: 15px;
+    align-items: center;
+}
+
+.grid_nav, .grid_modal_nav {
+    padding-top: 15px;
+    justify-items: center;
+}
+
+.grid_nav {
+    grid-template-columns: repeat(3, 125px);
+}
+
+.grid_add_pokemon_nav {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.grid_modal_center {
+    justify-items: center;
+}
+
+.login_box, .modal_box {
+    padding: 15px;
+}
+
+.modal_box {
+    margin: 0px;
+    border: none;
+    width: fit-content;
+    place-items: center;
+}
+
+.login_box {
+    border: 1px solid black;
+    border-radius: 5px;
+}
