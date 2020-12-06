@@ -8,7 +8,7 @@ class pdo
         $config = \util\database::get_config();
         $dsn = \util\database::get_dsn();
         
-        $driver_options = [ \PDO::ATTR_DEFAULT_FECTH_MODE => \PDO::FETCH_ASSOC,
+        $driver_options = [ \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION ];
 
         if (!$pdo = new \PDO( $dsn,

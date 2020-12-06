@@ -13,3 +13,5 @@ $html .= '<body>';
 echo $html;
 
 echo 'Development site';
+
+include('login.php');

@@ -1,6 +1,8 @@
 <?php
 namespace util;
 
+/* validate functions are inspired / borrowed from Samuraj Data AB */
+
 const ID_PATTERN = '/^[0-9]+$/';
 const INT_PATTERN = '/^-[0-9]+$|^[0-9]+$/';
 const STRING_PATTERN = '/^[\w]+$/';
@@ -61,7 +63,7 @@ function validate_array_key_string($container, $subject)
     return $set_subject;
 }    
 
-function validate_int_input($int, $default_return = 0)
+function validate_int_input($int, $default_return = [])
 {
     if (! isset($default_return['default']))
         $default_return['default'] = 0;
@@ -76,7 +78,7 @@ function validate_int_input($int, $default_return = 0)
     return $int;
 }
     
-function validate_id_input($id, $default_return = 0)
+function validate_id_input($id, $default_return = [])
 {
     if (! isset($default_return['default']) )
         $default_return['default'] = 0;
@@ -91,7 +93,7 @@ function validate_id_input($id, $default_return = 0)
     return $id;
 }
 
-function validate_string_input($string, $default_return = '')
+function validate_string_input($string, $default_return = [])
 {
     if (! isset($default_return['default']) )
         $default_return['default'] = '';
@@ -141,4 +143,10 @@ function pdo()
 function user()
 {
     return $GLOBALS['user'];
+}
+
+function redirect($url)
+{
+    header('Location: '.$url);
+    exit;
 }

@@ -5,12 +5,19 @@ class action
 {
 	public static function login()
 	{
+        // setup login object
         $sign_in = new \user\sign_in();
-        if ($username = $sign_in->login())
-            $something;
-        
-		\user\session::set($username);
+        $sign_in->set_html_username_name('email');
+        $sign_in->set_html_password_name('password');
 
-		return true;
+        try {
+            $username = $sign_in->login();
+        } catch ($error) {
+            return $error->getMessage();
+        }
+        
+        // If everything checks out, set session and reload site 
+		\user\session::set($username);
+        \util\redirect('/');
 	}
 }

@@ -27,8 +27,8 @@ class sign_in extends input
             throw new \Exception('Missing username');
         if (!$password = parent::get_input_name($this->_html_password_name))
             throw new \Exception('Missing password');
-        if (! self::authenticate($username, $password))
-            return false;
+
+        self::authenticate($username, $password);
 
         return $username;
     }
@@ -37,6 +37,7 @@ class sign_in extends input
     {        
         if (!$record = self::search_for_user($username))
             throw new \Exception('Invalid username or password');                
+
         if ($this->_password_secret)
             $password = parent::hash_password_with_secret($password);        
         if (!password_verify($password, $record[$this->_password_field]))

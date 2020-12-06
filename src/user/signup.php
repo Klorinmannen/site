@@ -7,7 +7,7 @@ class signup extends input
     
     private $_html_email_name;
     
-    private $_name_pattern;  
+    private $_username_pattern;  
     private $_email_filter;
     
     private $_password_secret;
@@ -20,10 +20,13 @@ class signup extends input
     private $_password_pattern_ucc;
     private $_password_pattern_sc;
     private $_password_exception_msg;
+
+    private $_table;
+    private $_where;
     
     public function __construct( $html_email_name = self::EMAIL_DEFAULT_HTML_NAME,
-                                 $html_username_name,
-                                 $html_password_name ) 
+                                 $html_username_name = '',
+                                 $html_password_name = '' ) 
     {
         $this->_html_email_name = $html_email_name;
         parent::__construct($html_username_name, $html_password_name);
@@ -32,7 +35,7 @@ class signup extends input
 
     private function init()
     {
-        $this->_name_pattern = '/.+/';        
+        $this->_username_pattern = '/.+/';        
         $this->_email_filter = \FILTER_VALIDATE_EMAIL;
         
         $this->_password_hash_algorithm = \PASSWORD_DEFAULT;
@@ -48,9 +51,13 @@ class signup extends input
         $this->_password_exception_msg = 'The password must be 8 characters long.';
         $this->_password_exception_msg .= '\nContain one upper and lower case character.';
         $this->_password_exception_msg .= '\nOne special case character and one number';
+
+        $this->_table = 'User';
+        $this->_where = 'Email';
     }
 
     public function set_html_email_name(string $html_email_name) { $this->_html_email_name = $html_email_name; }            
+
     public function set_password_any_pattern(string $password_pattern) { $this->_password_pattern_any = $password_pattern; }
     public function set_password_length_pattern(string $password_pattern) { $this->_password_pattern_length = $password_pattern; }
     public function set_password_lcc_pattern(string $password_pattern) { $this->_password_pattern_lcc = $password_pattern; }
@@ -59,6 +66,9 @@ class signup extends input
     public function set_password_sc_pattern(string $password_pattern) { $this->_password_pattern_sc = $password_pattern; }    
     public function set_password_hash_algorithm(string $algorithm) { $this->_password_hash_algorithm = $algorithm; }
     public function set_password_hash_options(array $options) { $this->_password_hash_options = $options; }
+
+    public function set_table(string $table) { $this->_table = $table; }
+    public function set_where(array $where) { $this->_where = $where; }
     
     public function get_inputs()
     {
@@ -71,22 +81,45 @@ class signup extends input
 
         $email = trim($email);
         if (! self::validate_email($email))
-            throw new \Exception('Invalid username');        
+            throw new \Exception('Invalid username / email');        
         $username = trim($username);
         if (! self::validate_username($username))
-            throw new \Exception('Invalid username');
+            throw new \Exception('Invalid username / email');
 
+        if ($user_record = self::search_for_user($email))
+            throw new \Exception('Invalid username / email');
+        
         if (! self::validate_password($password))
             throw new \Exception($this->_password_exception_msg);
         
-        if (!$password = self::treat_password($password))
-            return false;
-        
-        return [ 'email' => $email,
-                 'username' => $username,
-                 'password' => $password ];
+        $password = self::treat_password($password);
+
+        $inputs = [ 'email' => $email,
+                    'username' => $username,
+                    'password' => $password ];
+
+        return $inputs;        
+        //Det Gaur inte
+        //return self::insert_user($inputs);
     }
 
+    private function insert_user($inputs)
+    {
+        $user = [ 'Email' => $input['email'],
+                  'Username' => $input['username'],
+                  'Password' => $input['Password'] ];
+        
+        $table = new \util\table('User');
+        return $table->insert($user);
+    }
+    
+    private function search_for_user($email)
+    {
+        $table = new \util\table($this->_table);        
+        $table->set_where_fields([ $this->_where => $email ]);
+        return $table->select();
+    }
+    
     private function validate_email($email)
     {
         return filter_var($email, $this->_email_filter);

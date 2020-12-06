@@ -11,4 +11,5 @@ config.php
 .gitignore~
 git_stuff
 database-backup.sql
+config/
 

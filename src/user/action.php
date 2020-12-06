@@ -17,4 +17,10 @@ class action
         
         return $record;
     }
+
+    public static function insert($new_user)
+    {
+        $table = new \util\table('User');
+        return $table->insert($new_user);
+    }
 }

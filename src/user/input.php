@@ -3,7 +3,7 @@ namespace uitl\user;
 
 class input
 {
-    public const USERNAME_DEFAULT_HTML_NAME = 'username';
+    public const USERNAME_DEFAULT_HTML_NAME = 'email';
     public const PASSWORD_DEFAULT_HTML_NAME = 'password';
 
     public const SECRET_HASH_METHOD = 'sha256';
