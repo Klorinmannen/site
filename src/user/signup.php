@@ -1,7 +1,7 @@
 <?php
 namespace user;
 
-class sign_up extends input
+class signup extends input
 {
     public const EMAIL_DEFAULT_HTML_NAME = 'email';
     

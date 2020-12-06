@@ -137,3 +137,8 @@ function pdo()
 {
     return $GLOBALS['pdo'];
 }
+
+function user()
+{
+    return $GLOBALS['user'];
+}
