@@ -1,6 +1,6 @@
 <?php
 
-$login = \util\validate_id_input('login');
+//$login = validate_id_input('login');
 if ($login === 1)
     \login\action::login();
 

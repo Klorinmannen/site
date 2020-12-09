@@ -13,5 +13,6 @@ $html .= '<body>';
 echo $html;
 
 echo 'Development site';
+$page = page::get();
+include($page);
 
-//include('login.php');

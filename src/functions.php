@@ -146,7 +146,7 @@ function user()
 
 function table($name)
 {
-    return new \table($name);
+    return new \util\table($name);
 }
 
 function redirect($url)

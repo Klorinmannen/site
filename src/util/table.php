@@ -55,7 +55,8 @@ class table
     }
 
     // Assuming $fields =  [ 'RealTableFieldName', 'AnotherRealTableFieldName' ]
-    // Returns records = [ 0  => [ 'RealTableFieldName' => its value ] ]
+    // Returns records = [ 0  => [ 'RealTableFieldName' => its value ], .. ]
+    // Returns record = [ 'RealTableFieldName' => its value ]
     public function select($fields = null)
     {
         self::create_select_fields_and_params($fields);
@@ -168,7 +169,16 @@ class table
     {
         $this->_records = [];
         while ($record = $this->_query->fetch())
-            $this->_records[] = $record;
+            $this->_records[] = $record;            
+
+        switch (count($this->_records)) {
+        case 0:
+            $this->_records = false;
+            break;
+        case 1:
+            $this->_records = $this->_records[0];
+            break;
+        }
     }    
     
     private function create_update_sql($fields)

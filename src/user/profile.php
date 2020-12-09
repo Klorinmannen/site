@@ -24,7 +24,7 @@ class profile
     {
         $this->_user_email = $this->_record['Email'];
         $this->_user_name = $this->_record['Username'];
-        $this->_user_id = $this->_record['UserID';
+        $this->_user_id = $this->_record['UserID'];
         $this->_page_id = $this->_record['PageID'];               
         $this->_user_file_path = $this->_record['FilePath'];
     }
