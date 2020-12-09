@@ -1,5 +1,4 @@
 <?php
-namespace util;
 
 /* validate functions are inspired / borrowed from Samuraj Data AB */
 
@@ -143,6 +142,11 @@ function pdo()
 function user()
 {
     return $GLOBALS['user'];
+}
+
+function table($name)
+{
+    return new \table($name);
 }
 
 function redirect($url)

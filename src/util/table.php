@@ -33,7 +33,7 @@ class table
     public function __construct($table = null)
     {
         $this->_table = $table;
-        $this->_pdo = null;
+        $this->_pdo = pdo();
         $this->_select = null;
         $this->_where = null;
         $this->_query = null;
@@ -89,7 +89,7 @@ class table
         self::create_insert_sql($fields);
         self::make_query();
 
-        return $pdo->lastInsertId;
+        return $this->_pdo->lastInsertId();
     }
 
     public function get_records()
@@ -158,7 +158,7 @@ class table
         
     private function make_query()
     {
-        if (!$this->_query = \util\pdo()->prepare($this->_sql))
+        if (!$this->_query = $this->_pdo->prepare($this->_sql))
             throw new \Exception('Failed to prepare query');
         if (!$this->_query->execute($this->_params))
             throw new \Exception('Failed to execute query');

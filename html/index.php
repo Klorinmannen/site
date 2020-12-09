@@ -1,7 +1,7 @@
 <?php
 require_once('../src/init.php');
 
-session_start();
+//session_start();
 
 $html = '<html>';
 $html .= '<head>';
@@ -14,4 +14,4 @@ echo $html;
 
 echo 'Development site';
 
-include('login.php');
+//include('login.php');

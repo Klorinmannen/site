@@ -48,7 +48,7 @@ class sign_in extends input
     
     private function search_for_user($username)
     {
-        $table = new \util\table($this->_table);        
+        $table = table($this->_table);        
         $table->set_where_fields([ $this->_where => $username ]);
         return $table->select($this->_password_field);
     }

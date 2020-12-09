@@ -85,10 +85,8 @@ class signup extends input
         $username = trim($username);
         if (! self::validate_username($username))
             throw new \Exception('Invalid username / email');
-
         if ($user_record = self::search_for_user($email))
-            throw new \Exception('Invalid username / email');
-        
+            throw new \Exception('Invalid username / email');        
         if (! self::validate_password($password))
             throw new \Exception($this->_password_exception_msg);
         
@@ -99,23 +97,11 @@ class signup extends input
                     'password' => $password ];
 
         return $inputs;        
-        //Det Gaur inte
-        //return self::insert_user($inputs);
-    }
-
-    private function insert_user($inputs)
-    {
-        $user = [ 'Email' => $input['email'],
-                  'Username' => $input['username'],
-                  'Password' => $input['Password'] ];
-        
-        $table = new \util\table('User');
-        return $table->insert($user);
     }
     
     private function search_for_user($email)
     {
-        $table = new \util\table($this->_table);        
+        $table = table($this->_table);        
         $table->set_where_fields([ $this->_where => $email ]);
         return $table->select();
     }
