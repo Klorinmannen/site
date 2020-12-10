@@ -1,18 +1,8 @@
 <?php
 require_once('../src/init.php');
 
-//session_start();
+\site\page::default();
 
-$html = '<html>';
-$html .= '<head>';
-$html .= '<meta name="viewport" content="width=device-width,initial-scale=1.0">';
-$html .= '<link rel="stylesheet" href="/css/style.css">';
-$html .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">';
-$html .= '</head>';
-$html .= '<body>';
-echo $html;
-
-echo 'Development site';
 $page = page::get();
 include($page);
 

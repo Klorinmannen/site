@@ -18,6 +18,6 @@ class action
         
         // If everything checks out, set session and reload site 
 		\user\session::set($username);
-        \util\redirect('/');
+        redirect('/');
 	}
 }

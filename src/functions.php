@@ -141,7 +141,7 @@ function pdo()
 
 function user()
 {
-    return $GLOBALS['user'];
+    return $_SESSION['user'];
 }
 
 function table($name)

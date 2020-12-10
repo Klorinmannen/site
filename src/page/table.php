@@ -1,7 +1,7 @@
 <?php
 namespace page;
 
-class action
+class table
 {
     public static function get($page_id)
     {

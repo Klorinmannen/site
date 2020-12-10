@@ -20,6 +20,6 @@ class action
                       'Username' => $new_user_inputs['username'],
                       'Password' => $new_user_inputs['password'] ];
         
-        return \user\action::insert($new_user);
+        return \user\table::insert($new_user);
     }
 }

@@ -3,29 +3,19 @@ namespace user;
 
 class action
 {
-    const PAGE_ID = 10;
-
     public static function init()
     {
-        if (! isset($_SESSION['user']))
-            $_SESSION['user'] = new \user\profile();
+        if (! static::is_set())
+            static::create_and_set_guest_user();
+    }
+
+    public static function create_and_set_guest_user()
+    {
+        $_SESSION['user'] = new \user();
     }
     
-    public static function get_user_by_email($email)
+    public static function is_set()
     {
-        if (!$email)
-            throw new \Exception('Missing email');
-
-        $table = table('User');
-        $table->set_where_fields([ 'Email' => $email ]);
-        if (!$record = $table->select())
-            return false;
-        
-        return $record;
-    }
-
-    public static function insert($new_user)
-    {
-        return table('User')->insert($new_user);
+        return isset($_SESSION['user']);
     }
 }
