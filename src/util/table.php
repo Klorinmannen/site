@@ -1,20 +1,20 @@
 <?php
 namespace util;
 
-class table
-{
-    /*
-      Needs a PDO to be set to function
-      Fetch style needs to be set on the PDO.
+/*
+  Needs a PDO to be set to function
+  Fetch style needs to be set on the PDO.
       
-      select fields can be either an array [ 'RealDatabaseFieldName', 'AnotherDatabaseFieldName' ]
-      or a well formated sql string without a SELECT statement.
+  select fields can be either an array [ 'RealDatabaseFieldName', 'AnotherDatabaseFieldName' ]
+  or a well formated sql string without a SELECT statement.
 
-      where fields can be either an array [ 'RealDatabaseFieldName = SomeValue' ]
-      or a well formated sql string without a WHERE statement.
+  where fields can be either an array [ 'RealDatabaseFieldName = SomeValue' ]
+  or a well formated sql string without a WHERE statement.
       
-     */
-    
+*/
+  
+class table
+{  
     public const DEFAULT_SELECT = '*';
 
     private $_table;

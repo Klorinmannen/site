@@ -36,7 +36,7 @@ class page
                       'name' => 'page_id',
                       'value' => '4',
                       'title' => 'Logout' ];
-            $button = \util\make\html::button($opts);
+            $button = \make\html::button($opts);
             $html .= sprintf($div, $button);
 
             $div = '<div>%s</div>';
@@ -44,7 +44,7 @@ class page
                       'name' => 'page_id',
                       'value' => '11',
                       'title' => 'Pokémon' ];
-            $button = \util\make\html::button($opts);
+            $button = \make\html::button($opts);
             $html .= sprintf($div, $button);
 
             $div = '<div>%s</div>';
@@ -52,7 +52,7 @@ class page
                       'name' => 'page_id',
                       'value' => '12',
                       'title' => 'Stats' ];
-            $button = \util\make\html::button($opts);
+            $button = \make\html::button($opts);
             $html .= sprintf($div, $button);
             
             $html .= '</div>';
