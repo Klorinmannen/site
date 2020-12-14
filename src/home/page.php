@@ -12,12 +12,13 @@ class page
         $html .= '<br><img style="text-align:center;" src="https://img.pokemondb.net/sprites/go/shiny/spinda.png" />';
 
         $svg = new \make\svg\donut();
-        $svg->set_size(100, 100);
-        $svg->set_radius(40);
-        $svg->set_stroke_width(20);
-        $svg->set_fill_color('gray');
-        $svg->set_data([400, 10, 65, 110, 600, 531]);
-        $svg->set_echo(false);
+        $svg->set_size(1200, 1200);
+        $svg->set_radius(400);
+        $svg->set_stroke_width(200);
+        $svg->set_spacing(10);
+        $svg->set_fill_color('');
+        $svg->set_data([400, 40, 65, 110, 600, 531]);
+        $svg->set_bg_full();
         $html .= $svg->create();
 
         echo $html;

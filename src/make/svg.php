@@ -35,7 +35,7 @@ class svg
 
     public function set_size(int $width, int $height)
     {
-        $this->height = $height;
+        $this->_height = $height;
         $this->_width = $width;
         self::set_half();
     }
@@ -46,8 +46,6 @@ class svg
         self::set_total();
     }
 
-    public function set_echo(bool $val) { $this->_echo_flag = $val; }
-    
     private function set_half()
     {
         $this->_half_width = $this->_width * 0.5;

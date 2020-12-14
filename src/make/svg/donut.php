@@ -12,12 +12,13 @@ class donut extends \make\svg
     private $_circumference;
 
     // Either rgb value or type, white, blue etc.
-    private $_fill_color = 'rgb(255, 255, 200)';
+    private $_fill_color = '';
     private $_stroke_colors = [ 'red', 'green', 'blue', 'purple', 'yellow', 'pink', 'orange', 'teal' ];
 
     private $_stroke_width = '3';
     private $_stroke_dasharray = '';
-    private $_ws_thickness = 0.5;
+    private $_ws = 0.5;
+    private $_background_factor = 0.5;
     
     public function __construct(array $data = [])
     {
@@ -36,71 +37,75 @@ class donut extends \make\svg
         $this->_circumference = $this->_radius * 2 * pi();
     }
     
-    public function set_cx(int $cx) { $this->_cx = $cx; }
-    public function set_cy(int $cy) { $this->_cy = $cy; }
-    public function set_center(int $cx, int $cy)
-    {
-        $this->_cx = $cx;
-        $this->_cy = $cy;
-    }
-
-    public function set_fill_color($color) { $this->_fill_color = $color; }
+    public function set_fill_color(string $color) { $this->_fill_color = $color; }
     public function set_stroke_width(int $width) { $this->_stroke_width = $width; }
     public function set_stroke_colors(array $colors) { $this->_stroke_colors = $colors; }
-    public function set_ws_thickness(int $thickness) {$this->_ws_thickness = $thickness; }
-
+    public function set_spacing(float $spacing) {$this->_ws = $spacing; }
+    public function set_bg_inside() { $this->_background_factor = 0.5; }
+    public function set_bg_full() { $this->_background_factor = -0.5; }
+    
     public function create()
     {
         $svg = sprintf('<svg width="%s" height="%s">', $this->_width, $this->_height);
         $svg .= '%s</svg>';
 
         $circles = [];
-        $rotate = 0;
+        $rotation = 0;
         $iteration = 0;
+        
+        if ($this->_fill_color)
+            $circles[] = self::get_background_circle();
+        
         foreach ($this->_data as $value) {
-            $circles[] = self::get_circle($value, $rotate, $iteration);
-            $rotate += self::get_rotation_part($value, $this->_total);
+            $circles[] = self::get_circle($value, $rotation, $iteration);
+            $rotation += self::get_rotation($value);
             $iteration++;
         }
 
-        $g .= sprintf('<g transform-origin="%s %s" transform="rotate(-90)">%s</g>',
+        $g = sprintf('<g transform-origin="%s %s" transform="rotate(-90)">%s</g>',
                        $this->_half_width,
                        $this->_half_height,
                        implode(' ', $circles));
 
         $this->_svg = sprintf($svg, $g);
         
-        // Now what?
-        if ($this->_echo_flag)
-            echo $this->_svg;
-        else
-            return $this->_svg;
+        return $this->_svg;
+    }
+    
+    private function get_background_circle()
+    {
+        return sprintf('<circle transform-origin="%s %s" cx="%d" cy="%d" r="%d" fill="%s" />',
+                       $this->_half_width,
+                       $this->_half_height,
+                       $this->_half_width,
+                       $this->_half_height,
+                       $this->_radius - ($this->_stroke_width * $this->_background_factor),
+                       $this->_fill_color);
     }
     
     private function get_circle($value, $rotate, $iteration)
     {
-        return sprintf('<circle transform-origin="%s %s" transform="rotate(%s)" cx="%d" cy="%d" r="%d" stroke="%s" fill="%s" stroke-width="%d" stroke-dasharray="%s,%s" />',
+        return sprintf('<circle fill-opacity="0" transform-origin="%s %s" transform="rotate(%s)" cx="%d" cy="%d" r="%d" stroke="%s" stroke-width="%d" stroke-dasharray="%s,%s" />',
                        $this->_half_width,
                        $this->_half_height,
                        $rotate,
-                       $this->_cx,
-                       $this->_cy,
+                       $this->_half_width,
+                       $this->_half_height,
                        $this->_radius,
                        $this->_stroke_colors[$iteration],
-                       $this->_fill_color,
                        $this->_stroke_width,
-                       self::get_circle_part($value, $this->_total),
+                       self::get_circle_part($value),
                        $this->_circumference);
     }
     
-    private function get_rotation_part($value, $total)
+    private function get_rotation($value)
     {
-        return ($value / $total) * 360;
+        return ($value / $this->_total) * 360;
     }
     
-    private function get_circle_part($value, $total)
+    private function get_circle_part($value)
     {
-        $part = ($value / $total) * $this->_circumference;
-        return count($this->_data) > 1 ? $part - 0.5 : $part;
+        $part = ($value / $this->_total) * $this->_circumference;
+        return count($this->_data) > 1 ? $part - $this->_ws : $part;
     }
 }
