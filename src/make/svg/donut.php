@@ -13,7 +13,11 @@ class donut extends \make\svg
 
     // Either rgb value or type, white, blue etc.
     private $_fill_color = '';
-    private $_stroke_colors = [ 'red', 'green', 'blue', 'purple', 'yellow', 'pink', 'orange', 'teal' ];
+    private $_stroke_colors = [ 'red', 'green', 'blue',
+                                'purple', 'yellow', 'pink',
+                                'orange', 'teal', 'crimson',
+                                'gold', 'olive', 'salmon',
+                                'lime', 'khaki', 'coral' ];
 
     private $_stroke_width = '3';
     private $_stroke_dasharray = '';
@@ -57,7 +61,8 @@ class donut extends \make\svg
             $circles[] = self::get_background_circle();
         
         foreach ($this->_data as $value) {
-            $circles[] = self::get_circle($value, $rotation, $iteration);
+            $chart_part = self::get_circle_part($value);
+            $circles[] = self::get_circle($chart_part, $rotation, $iteration);
             $rotation += self::get_rotation($value);
             $iteration++;
         }
@@ -83,19 +88,29 @@ class donut extends \make\svg
                        $this->_fill_color);
     }
     
-    private function get_circle($value, $rotate, $iteration)
+    private function get_circle($chart_part, $rotation, $iteration)
     {
-        return sprintf('<circle fill-opacity="0" transform-origin="%s %s" transform="rotate(%s)" cx="%d" cy="%d" r="%d" stroke="%s" stroke-width="%d" stroke-dasharray="%s,%s" />',
-                       $this->_half_width,
-                       $this->_half_height,
-                       $rotate,
-                       $this->_half_width,
-                       $this->_half_height,
-                       $this->_radius,
-                       $this->_stroke_colors[$iteration],
-                       $this->_stroke_width,
-                       self::get_circle_part($value),
-                       $this->_circumference);
+        $attribute[] = sprintf('transform-origin="%f %f"',
+                                    $this->_half_width,
+                                    $this->_half_height);
+
+        $attribute[] = sprintf('transform="rotate(%f)"',
+                               $rotation);
+
+        $attribute[] = sprintf('cx="%f" cy="%f" r="%f"',
+                               $this->_half_width,
+                               $this->_half_height,
+                               $this->_radius);
+
+        $attribute[] = sprintf('stroke="%s" stroke-width="%f"',
+                               $this->_stroke_colors[$iteration],
+                               $this->_stroke_width);
+
+        $attribute[] = sprintf('stroke-dasharray="%f,%f"',
+                               $chart_part,
+                               $this->_circumference);
+ 
+        return sprintf('<circle fill-opacity="0" %s/>', implode(' ', $attribute));
     }
     
     private function get_rotation($value)
