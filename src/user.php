@@ -10,7 +10,7 @@ class user
 	private $_user_id = 0;
 	private $_page_id = 2;
     private $_user_file_path = '';
-    private $_page_permission = [2, 13];
+    private $_page_permission = [ 2, 13 ];
     private $_status = false;
     private $_record = [];
     
@@ -36,7 +36,6 @@ class user
     {
         if (is_array($ids))
             return (bool)array_intersect($ids, $this->_page_permission);
-        echo var_dump($this->_page_permission);
         return (bool)in_array($ids, $this->_page_permission);
     }
     
