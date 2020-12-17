@@ -105,7 +105,7 @@ class table
             if (is_array($fields))
                 $this->_select = implode(', ', $fields);
             else
-                $this->_select =  $fields;
+                $this->_select = $fields;
 
         self::set_where();
     }
@@ -160,9 +160,9 @@ class table
     private function make_query()
     {
         if (!$this->_query = $this->_pdo->prepare($this->_sql))
-            throw new \Exception('Failed to prepare query');
+            throw new \Exception('Failed to prepare query', 500);
         if (!$this->_query->execute($this->_params))
-            throw new \Exception('Failed to execute query');
+            throw new \Exception('Failed to execute query', 500);
     }
 
     private function set_records()
@@ -172,9 +172,6 @@ class table
             $this->_records[] = $record;            
 
         switch (count($this->_records)) {
-        case 0:
-            $this->_records = false;
-            break;
         case 1:
             $this->_records = $this->_records[0];
             break;

@@ -5,6 +5,12 @@
 const ID_PATTERN = '/^[0-9]+$/';
 const INT_PATTERN = '/^-[0-9]+$|^[0-9]+$/';
 const STRING_PATTERN = '/^[\w]+$/';
+const STRING_SANITIZE_PATTERN = '/[^\w]/';
+
+function sanitize_string(string $string)
+{
+    return preg_replace(STRING_SANITIZE_PATTERN, '', $string);
+}
 
 function validate_id($id)
 {
@@ -147,6 +153,16 @@ function user()
 function table($name)
 {
     return new \util\table($name);
+}
+
+function svg_pie(array $data = [])
+{
+    return new \make\svg\pie($data);
+}
+
+function svg_donut(array $data = [])
+{
+    return new \make\svg\donut($data);
 }
 
 function redirect($url)
