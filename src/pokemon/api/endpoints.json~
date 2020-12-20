@@ -1,0 +1,7 @@
+{
+    "patterns":
+    [
+	"\/pokemon",
+	"\/pokemon\/\d"
+    ] 	
+}

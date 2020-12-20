@@ -32,7 +32,7 @@ class user
         $this->_status = true;
     }
 
-    public function check_permission($ids = 0)
+    public function has_access($ids = 0)
     {
         if (is_array($ids))
             return (bool)array_intersect($ids, $this->_page_permission);
@@ -50,5 +50,6 @@ class user
 	public function get_user_id() { return $this->_user_id; }
 	public function get_page_id() { return $this->_page_id; }
     public function get_status() { return $this->_status; }
+    public function get_page_permission() {return $this->_page_permission; }
 }
 

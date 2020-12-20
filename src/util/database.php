@@ -13,15 +13,7 @@ class database
     public static function get_config()
     {
         $config_path = static::get_config_path();
-        $json_string = file_get_contents($config_path);
-        if ($json_string === false)
-            throw new \Exception('Failed to get db config');
-
-        $config = json_decode($json_string, true);
-        if ($config === NULL)
-            throw new \Exception('Failed to decode json');
-
-        return $config;
+        return \util\json::get($config_path);
     }
 
     public static function get_dsn()
