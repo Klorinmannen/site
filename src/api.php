@@ -1,27 +1,13 @@
 <?php
 ob_clean();
-$uri = preg_replace('/\/api\//', '', $_SERVER['REQUEST_URI']);
-$request_path = preg_split('/\//', $uri);
+$request = \api\request::parse();
+$controller = array_shift($request);
+$endpoint = \api\router::map($_SERVER['REQUEST_METHOD'], $controller, \api\request::parse_uri());
+$api_endpoint = sprintf('%s\api::%s', $controller, $endpoint);
 
 try {
-    switch ($request_path[0]) {
-    case 'pokemon':
-        if ($_SERVER['REQUEST_METHOD'] == 'GET')            
-            if (isset($request_path[1]))
-                \pokemon\api::get($request_path[1]);
-            else
-                \pokemon\api::get_list();
-        else
-            throw new \Exception('invalid request method', 400);
-            
-        break;
-    default:
-        throw new \Exception('bad request', 400);
-        break;        
-    }
-    
-    http_response_code(200);
-        
+    $api_endpoint( ...$request);
+    http_response_code(200);        
 } catch (\Exception $e) {
 
     switch ($e->getCode()) {

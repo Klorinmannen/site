@@ -1,7 +1,0 @@
-{
-    "GET":
-    {
-	"/pokemon": "pokemon\\api\\get_all",
-	"/pokemon/\\d": "pokemon\\api\\get"
-    }
-}

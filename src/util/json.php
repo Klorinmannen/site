@@ -21,7 +21,7 @@ class json
         return $content;
     }
     
-    public static function get(string $path)
+    public static function parse(string $path)
     {
         if (!$path)
             throw new \Exception('Missing json path', 500);

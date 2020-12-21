@@ -13,7 +13,7 @@ class database
     public static function get_config()
     {
         $config_path = static::get_config_path();
-        return \util\json::get($config_path);
+        return \util\json::parse($config_path);
     }
 
     public static function get_dsn()
