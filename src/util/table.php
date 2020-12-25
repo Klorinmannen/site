@@ -71,7 +71,7 @@ class table
         return $this;
     }
 
-    // Friend function of select()
+    // Called to query the database/table after everything is 
     public function query()
     {
 
@@ -109,6 +109,7 @@ class table
 
         $this->_query_type = static::UPDATE;
         self::create_update_fields_and_params($fields);
+        return $this;
     }
 
     // Assuming $fields = [ 'RealTableFieldName' => its value ]
@@ -119,15 +120,12 @@ class table
 
         $this->_query_type = static::INSERT;
         self::create_insert_fields_and_params($fields);
+        return $this;
     }
     
     public function get_records()
     {
         return $this->_records;
-    }
-
-    private function create_sql()
-    {
     }
     
     private function create_select_fields_and_params($fields)
