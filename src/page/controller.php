@@ -1,11 +1,12 @@
 <?php
+namespace page;
 
-class page 
+class controller
 {
-	public static function get() 
+	public static function get_page() 
 	{
         $page_id = static::get_page_id();
-        return static::get_page($page_id);
+        return \page\model::get_by_id($page_id);
     }
 
     public static function get_page_id()
@@ -18,10 +19,5 @@ class page
         if (!user()->has_access($page_id))
             $page_id = user()->get_page_id();              
         return $page_id;
-    }
-    
-    public static function get_page($page_id)
-    {
-        return \page\table::get($page_id);
     }
 }

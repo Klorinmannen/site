@@ -10,4 +10,4 @@ require_once('functions.php');
 
 // Initiate globals / sessions 
 \util\pdo::init();
-\user\action::init();
+\user\controller::init();

@@ -1,8 +1,0 @@
-{
-    "GET":
-    [
-	"/pokemon": "get_list",
-	"/pokemon/:id": "get",
-	"/pokemon/:id/family": "get_family"
-    ]
-}

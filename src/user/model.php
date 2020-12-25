@@ -1,21 +1,15 @@
 <?php
 namespace user;
 
-class table
+class model
 {
     const PAGE_ID = 10;
     
     public static function get_user_by_email($email)
     {
-        if (!$email)
-            throw new \Exception('Missing email');
-
         $table = table('User');
-        $table->set_where_fields([ 'Email' => $email ]);
-        if (!$record = $table->select())
-            return false;
-        
-        return $record;
+        $table->set_where_fields([ 'Email' => $email, 'Active' => -1 ]);       
+        return $table->select();
     }
 
     public static function insert($new_user)

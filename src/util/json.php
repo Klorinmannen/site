@@ -13,9 +13,9 @@ class json
         return $json_string;
     }
 
-    public static function decode(string $json_string, bool $array = true)
+    public static function decode(string $json_string, bool $as_array = true)
     {
-        $content = json_decode($json_string, $array);
+        $content = json_decode($json_string, $as_array);
         if ($content === NULL)
             throw new \Exception('Failed to decode json string', 500);
         return $content;

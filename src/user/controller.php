@@ -1,7 +1,7 @@
 <?php
 namespace user;
 
-class action
+class controller
 {
     public static function init()
     {

@@ -1,7 +1,7 @@
 <?php
 namespace site;
 
-class page
+class view
 {
     public static function get_head_data()
     {

@@ -1,9 +1,9 @@
 <?php
-namespace pokemon;
+namespace pokemon\api;
 
-class api
+class controller
 {
-    public const API_ENDPOINTS = 'pokemon/endpoints.json';
+    public const ENDPOINTS = 'pokemon/api/endpoints.json';
     
     public const FIELDS = [ 'PokemonID',
                             'ParentPokemonIDList',
@@ -14,32 +14,32 @@ class api
                             'Stamina',
                             'Shiny',
                             'Shadow' ];    
-    
-    public static function get_endpoints()
+        
+    public static function get_by_id($id)
     {
-        $path = sprintf('%s%s', \site::SRC_DIR, static::API_ENDPOINTS);
-        return \util\json::parse($path);
-    }
-    
-    public static function get($pokemon_id)
-    {
-        if (!validate_id($pokemon_id))
+        if (!validate_id($id))
             throw new \Exception('bad request, invalid pokemon id', 400);
-
-        $table = table('Pokemon');
-        $table->set_where_fields(['PokemonID' => $pokemon_id]);
-        echo json_encode($table->select(static::FIELDS));
+        $data = \pokemon\model::get_by_id($id, static::FIELDS);
+        return json_encode($data);
     }
 
+    public static function get_by_name($name)
+    {
+        if (!sanitize_string($name))
+            throw new \Exception('bad request, invalid pokemon id', 400);
+        $data = \pokemon\model::get_by_name($name, static::FIELDS);
+        return json_encode($data);
+    }
+    
     public static function get_family($id)
     {
         if (!validate_id($pokemon_id))
             throw new \Exception('bad request, invalid pokemon id', 400);
-
     }
     
     public static function get_list()
     {
-        echo json_encode(table('Pokemon')->select(static::FIELDS));
+        $data = \pokemon\model::get_all(static::FIELDS);
+        return json_encode($data);
     }   
 }
