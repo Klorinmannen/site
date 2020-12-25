@@ -11,9 +11,7 @@ class controller
                             'Name',
                             'Attack',
                             'Defense',
-                            'Stamina',
-                            'Shiny',
-                            'Shadow' ];    
+                            'Stamina' ];
         
     public static function get_by_id($id)
     {
@@ -25,9 +23,8 @@ class controller
 
     public static function get_by_name($name)
     {
-        if (!sanitize_string($name))
-            throw new \Exception('bad request, invalid pokemon id', 400);
-        $data = \pokemon\model::get_by_name($name, static::FIELDS);
+        $sanitized_name = sanitize_string($name);
+        $data = \pokemon\model::get_by_name($sanitized_name, static::FIELDS);
         return json_encode($data);
     }
     

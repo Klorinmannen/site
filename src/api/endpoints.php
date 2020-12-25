@@ -3,9 +3,9 @@ namespace api;
 
 class endpoints
 {
-    public const ID = ':id';
-    public const STRING = ':string';
-    public const FWSL = '/';
+    public const PARSING_PATTERNS = [ ':id' => '\\d+',
+                                      ':string' => '[a-zA-Z]+',
+                                      '/' => '\/' ];
     
     public static function parse_config($endpoints)
     {
@@ -15,9 +15,8 @@ class endpoints
 
     public static function prepare(&$value)
     {
-        $value = str_replace(static::ID, '\\d+', $value);
-        $value = str_replace(static::STRING, '[a-zA-Z]+', $value);
-        $value = str_replace(static::FWSL, '\/', $value);
+        foreach (static::PARSING_PATTERNS as $key => $pattern) 
+            $value = str_replace($key, $pattern, $value);        
         $value = sprintf('/^%s$/', $value);
     }
 

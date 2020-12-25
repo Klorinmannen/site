@@ -52,6 +52,7 @@ class table
     public function set_where_fields($fields)
     {
         $this->_where_fields = $fields;
+        return $this;
     }
 
     // Assuming $fields =  [ 'RealTableFieldName', 'AnotherRealTableFieldName' ]
@@ -63,10 +64,14 @@ class table
         self::create_select_sql();
         self::make_query();
         self::set_records();
-        
         return $this->_records;
     }
 
+    // Friend function of select()
+    public function query()
+    {
+    }
+    
     // Assuming $fields =  [ 'RealTableFieldName' => its value ]
     public function update(array $fields)
     {
@@ -92,7 +97,7 @@ class table
 
         return $this->_pdo->lastInsertId();
     }
-
+    
     public function get_records()
     {
         return $this->_records;

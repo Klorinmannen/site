@@ -4,18 +4,24 @@ $request = \api\request::parse();
 $controller = array_shift($request);
 
 try {
-
-    // Map request to an specified endpoint if there is one
-    $endpoint = \api\router::map($_SERVER['REQUEST_METHOD'], $controller, \api\request::parse_uri());
+    
+    // Does the requested controller exist?
+    $api_controller = sprintf('%s\api\controller', $controller);
+    if (!class_exists($api_controller))
+        throw new \Exception('Bad request, endpoint does not exist', 400);    
+    
+    // Map request to an defined endpoint if there is one
+    $uri = \api\request::parse_uri();
+    $endpoint = \api\router::map($_SERVER['REQUEST_METHOD'], $controller, $uri);
 
     // Define the endpoint call
     $api_endpoint = sprintf('%s\api\controller::%s', $controller, $endpoint);
 
     // Make the actual endpoint call
-    $response_json_data = $api_endpoint( ...$request);
+    $json_encoded_response_data = $api_endpoint( ...$request);
 
     // Return response data and set response code
-    echo $response_json_data;   
+    echo $json_encoded_response_data;   
     http_response_code(200);        
 
 } catch (\Exception $e) {
