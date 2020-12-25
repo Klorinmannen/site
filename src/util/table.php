@@ -16,7 +16,11 @@ namespace util;
 class table
 {  
     public const DEFAULT_SELECT = '*';
+    public const SELECT = 1;
+    public const UPDATE = 2;
+    public const INSERT = 3;
 
+    private $_query_type;
     private $_table;
     private $_select;
     private $_where;
@@ -32,6 +36,7 @@ class table
     // $table = RealDatabaseTableName
     public function __construct($table = null)
     {
+        $this->_query_type = null;
         $this->_table = $table;
         $this->_pdo = pdo();
         $this->_select = null;
@@ -49,9 +54,10 @@ class table
         $this->_pdo = $pdo;
     }
 
-    public function set_where_fields($fields)
+    public function where($fields)
     {
         $this->_where_fields = $fields;
+        self::set_where();
         return $this;
     }
 
@@ -60,16 +66,39 @@ class table
     // Returns record = [ 'RealTableFieldName' => its value ]
     public function select($fields = null)
     {
+        $this->_query_type = static::SELECT;
         self::create_select_fields_and_params($fields);
-        self::create_select_sql();
-        self::make_query();
-        self::set_records();
-        return $this->_records;
+        return $this;
     }
 
     // Friend function of select()
     public function query()
     {
+
+        switch ($this->_query_type) {
+        case static::SELECT:
+            self::create_select_sql();
+            self::make_query();
+            self::set_records();
+            return $this->_records;
+
+            break;
+        case static::UPDATE:
+            self::create_update_sql($fields);
+            self::make_query();
+            return true;
+
+            break;
+        case static::INSERT:
+            self::create_insert_sql($fields);
+            self::make_query();            
+            return $this->_pdo->lastInsertId();
+            
+            break;
+        default:
+            throw new \Exception('Unknown query type');
+            break;
+        }
     }
     
     // Assuming $fields =  [ 'RealTableFieldName' => its value ]
@@ -77,12 +106,9 @@ class table
     {
         if (!$fields)
             throw new \Exception('Missing fields');
-        
-        self::create_update_fields_and_params($fields);
-        self::create_update_sql($fields);
-        self::make_query();
 
-        return true;
+        $this->_query_type = static::UPDATE;
+        self::create_update_fields_and_params($fields);
     }
 
     // Assuming $fields = [ 'RealTableFieldName' => its value ]
@@ -91,16 +117,17 @@ class table
         if (!$fields)
             throw new \Exception('Missing fields');
 
+        $this->_query_type = static::INSERT;
         self::create_insert_fields_and_params($fields);
-        self::create_insert_sql($fields);
-        self::make_query();
-
-        return $this->_pdo->lastInsertId();
     }
     
     public function get_records()
     {
         return $this->_records;
+    }
+
+    private function create_sql()
+    {
     }
     
     private function create_select_fields_and_params($fields)
@@ -111,8 +138,6 @@ class table
                 $this->_select = implode(', ', $fields);
             else
                 $this->_select = $fields;
-
-        self::set_where();
     }
     
     private function create_update_fields_and_params($fields)
@@ -122,8 +147,6 @@ class table
             $this->_fields[] = sprintf('%s = :%s', $db_field, $value_field);
             $this->_params[$value_field] = $value;
         }
-
-        self::set_where();
     }
 
     private function set_where()
