@@ -7,6 +7,7 @@ session_start();
 
 // General functions
 require_once('functions.php');
+require_once('objects.php');
 
 // Initiate globals / sessions 
 \util\pdo::init();

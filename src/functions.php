@@ -7,24 +7,24 @@ const INT_PATTERN = '/^-[0-9]+$|^[0-9]+$/';
 const STRING_PATTERN = '/^[\w]+$/';
 const STRING_SANITIZE_PATTERN = '/[^\w]/';
 
-function sanitize_string(string $string)
+function sanitize_string(string $string, $pattern = STRING_SANITIZE_PATTERN)
 {
-    return preg_replace(STRING_SANITIZE_PATTERN, '', $string);
+    return preg_replace($pattern, '', $string);
 }
 
-function validate_id($id)
+function validate_id($id, $pattern = ID_PATTERN)
 {
-    return (preg_match(ID_PATTERN, $id) === 1);
+    return (preg_match($pattern, $id) === 1);
 }
 
-function validate_int($int)
+function validate_int($int, $patter = INT_PATTERN)
 {
-    return (preg_match(INT_PATTERN, $int) === 1);
+    return (preg_match($pattern, $int) === 1);
 }
 
-function validate_string($string)
+function validate_string($string, $pattern = STRING_PATTERN)
 {
-    return (preg_match(STRING_PATTERN, $string) === 1);
+    return (preg_match($pattern, $string) === 1);
 }
  
 function validate_array($subject)
@@ -138,31 +138,6 @@ function is_set($container, $subject)
     if (! isset($container[$subject]))
         return false;
     return $container[$subject];
-}
-
-function pdo()
-{
-    return $GLOBALS['pdo'];
-}
-
-function user()
-{
-    return $_SESSION['user'];
-}
-
-function table($name)
-{
-    return new \util\table($name);
-}
-
-function svg_pie(array $data = [])
-{
-    return new \make\svg\pie($data);
-}
-
-function svg_donut(array $data = [])
-{
-    return new \make\svg\donut($data);
 }
 
 function redirect($url)
