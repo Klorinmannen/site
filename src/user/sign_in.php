@@ -18,7 +18,7 @@ class sign_in extends input
 
     public function set_pdo($pdo) { $this->_pdo = $pdo; }
     public function set_table(string $table) { $this->_table = $table; }
-    public function set_where($where) { $this->_where = $where; }
+    public function set_where(string $where) { $this->_where = $where; }
     public function set_password_field(string $password_field) { $this->_password_field = $password_field; }
 
     public function login()
@@ -29,7 +29,6 @@ class sign_in extends input
             throw new \Exception('Missing password');
 
         self::authenticate($username, $password);
-
         return $username;
     }
        
@@ -37,7 +36,6 @@ class sign_in extends input
     {        
         if (!$record = self::search_for_user($username))
             throw new \Exception('Invalid username or password');                
-
         if ($this->_password_secret)
             $password = parent::hash_password_with_secret($password);        
         if (!password_verify($password, $record[$this->_password_field]))
@@ -48,8 +46,6 @@ class sign_in extends input
     
     private function search_for_user($username)
     {
-        $table = table($this->_table);        
-        $table->set_where_fields([ $this->_where => $username ]);
-        return $table->select($this->_password_field);
+        return table($this->_table)->select($this->_password_field)->where([ $this->_where => $username, 'Active' => -1 ])->query();       
     }
 }

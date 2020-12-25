@@ -7,13 +7,11 @@ class model
     
     public static function get_user_by_email($email)
     {
-        $table = table('User');
-        $table->set_where_fields([ 'Email' => $email, 'Active' => -1 ]);       
-        return $table->select();
+        return table('User')->select()->where([ 'Email' => $email, 'Active' => -1 ])->query();
     }
 
     public static function insert($new_user)
     {
-        return table('User')->insert($new_user);
+        return table('User')->insert($new_user)->query();
     }
 }

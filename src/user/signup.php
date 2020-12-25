@@ -10,7 +10,6 @@ class signup extends input
     private $_username_pattern;  
     private $_email_filter;
     
-    private $_password_secret;
     private $_password_hash_algorithm;
     private $_password_hash_options;    
     private $_password_pattern_any;
@@ -24,12 +23,10 @@ class signup extends input
     private $_table;
     private $_where;
     
-    public function __construct( $html_email_name = self::EMAIL_DEFAULT_HTML_NAME,
-                                 $html_username_name = '',
-                                 $html_password_name = '' ) 
+    public function __construct($html_email_name = self::EMAIL_DEFAULT_HTML_NAME)
     {
         $this->_html_email_name = $html_email_name;
-        parent::__construct($html_username_name, $html_password_name);
+        parent::__construct();
         self::init();
     }
 
@@ -101,9 +98,7 @@ class signup extends input
     
     private function search_for_user($email)
     {
-        $table = table($this->_table);        
-        $table->set_where_fields([ $this->_where => $email ]);
-        return $table->select();
+        return table($this->_table)->select()->where([ $this->_where => $email ])->query();        
     }
     
     private function validate_email($email)

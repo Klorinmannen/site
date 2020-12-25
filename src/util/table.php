@@ -84,14 +84,14 @@ class table
 
             break;
         case static::UPDATE:
-            self::create_update_sql($fields);
+            self::create_update_sql();
             self::make_query();
             return true;
 
             break;
         case static::INSERT:
-            self::create_insert_sql($fields);
-            self::make_query();            
+            self::create_insert_sql();
+            self::make_query();
             return $this->_pdo->lastInsertId();
             
             break;
@@ -147,6 +147,16 @@ class table
         }
     }
 
+    private function create_insert_fields_and_params($fields)
+    {
+        foreach ($fields as $db_field => $value) {
+            $value_field = self::get_value_field($db_field);
+            $this->_fields[] = $db_field;
+            $this->_values[] = sprintf(':%s', $value_field);
+            $this->_params[$value_field] = $value;
+        }
+    }
+    
     private function set_where()
     {
         $where = '';
@@ -165,17 +175,7 @@ class table
         }        
         $this->_where = $where;
     }
-    
-    private function create_insert_fields_and_params($fields)
-    {
-        foreach ($fields as $db_field => $value) {
-            $value_field = self::get_value_field($db_field);
-            $this->_fields[] = $db_field;
-            $this->_values[] = sprintf(':%s', $value_field);
-            $this->_params[$value_field] = $value;
-        }
-    }
-    
+        
     // A need to normalize / generate a parameter name
     private function get_value_field($field)
     {
@@ -204,21 +204,21 @@ class table
         }
     }    
     
-    private function create_update_sql($fields)
+    private function create_update_sql()
     {        
         $this->_sql = sprintf( 'UPDATE %s SET %s %s',
                                $this->_table,
                                implode(', ', $this->_fields),
                                $this->_where );
+        var_dump($this->_sql);
     }
 
-    private function create_insert_sql($fields)
+    private function create_insert_sql()
     {
-        $this->_sql = sprintf( 'INSERT INTO %s ( %s ) VALUES ( %S )',
+        $this->_sql = sprintf( 'INSERT INTO %s ( %s ) VALUES ( %s )',
                                $this->_table,
                                implode(', ', $this->_fields),
                                implode(', ', $this->_values) );
-        
     }
     
     private function create_select_sql()

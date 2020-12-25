@@ -10,7 +10,7 @@ class user
 	private $_user_id = 0;
 	private $_page_id = 2;
     private $_user_file_path = '';
-    private $_page_permission = [ 2, 13 ];
+    private $_page_permission = [ 1, 2, 3, 13 ];
     private $_status = false;
     private $_record = [];
     

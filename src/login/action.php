@@ -10,11 +10,7 @@ class action
         $sign_in->set_html_username_name('email');
         $sign_in->set_html_password_name('password');
 
-        try {
-            $username = $sign_in->login();
-        } catch ($error) {
-            return $error->getMessage();
-        }
+        $username = $sign_in->login();
         
         // If everything checks out, set session and reload site 
 		\user\session::set($username);
