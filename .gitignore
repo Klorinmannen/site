@@ -8,6 +8,8 @@ data/
 *.css~
 *.html~
 *.json~
+*.yml~
+*.*~
 config.php
 .gitignore~
 git_stuff
