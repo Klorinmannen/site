@@ -3,6 +3,7 @@ ob_clean();
 $request = \api\request::parse();
 $controller = array_shift($request);
 
+
 try {
     
     // Does the requested controller exist?

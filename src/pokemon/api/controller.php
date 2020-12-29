@@ -3,8 +3,6 @@ namespace pokemon\api;
 
 class controller
 {
-    public const ENDPOINTS = 'pokemon/api/endpoints.json';
-    
     public const FIELDS = [ 'PokemonID',
                             'ParentPokemonIDList',
                             'DexID',

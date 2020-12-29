@@ -1,0 +1,56 @@
+components:
+  schemas:
+    Pokemon:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+get_list:
+  get:
+    summary: Returns a list of all pokemons
+    responses:
+      '200':
+        description: A json object with a list of pokemons
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Pokemon'
+
+get_by_id:
+  get:
+    summary: Returns pokemon corresponding to the given Pokédex ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int	  
+    responses:
+      '200':
+        description: A json object of a pokemon
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pokemon'
+
+get_by_name:
+  get:
+    summary: Returns pokemon corresponding to the given Pokémon name
+    parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A json object of a pokemon
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pokemon'

@@ -1,0 +1,13 @@
+openapi: 3.0.0
+info:
+  title: Projom.se Pokemon API documentation
+  version: 1.0.0
+  servers:
+  - url: "https://projom.se/api"
+paths:
+  /api/pokemon:
+    $ref: "pokemon.yml#/pokemon"
+  /api/pokemon/:id:
+    $ref: "pokemon.yml#/pokemon_by_id"
+  /api/pokemon/:string:
+    $ref: "pokemon.yml#/pokemon_by_name"

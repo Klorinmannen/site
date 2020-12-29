@@ -3,26 +3,41 @@ namespace api;
 
 class endpoints
 {
-    public const PARSING_PATTERNS = [ ':id' => '\\d+',
-                                      ':string' => '[a-zA-Z]+',
-                                      '/' => '\/' ];
-    
-    public static function parse_config($endpoints)
+    public const FUNCTION_PATTERN = [ 'pattern' => '/^.*#\//',
+                                      'replace' => '' ];
+    public const PATHS_PARSING_PATTERNS = [ '/api/' => '',
+                                            '{id}' => '\\d+',
+                                            '{name}' => '[a-zA-Z]+',
+                                            '/' => '\/' ];
+                                          
+    public static function parse_config($endpoint_config)
     {
-        array_walk($endpoints, ['self', 'prepare']);
-        return $endpoints;
+        $parsed_endpoints = [];
+        $paths = $endpoint_config['paths'];
+        foreach ($paths as $path => $path_info) {
+            $function = static::parse_function($path_info['$ref']);
+            $parsed_endpoints[$function] = static::parse_path($path);
+        }
+        return $parsed_endpoints;
     }
 
-    public static function prepare(&$value)
+    public static function parse_function($desc)
     {
-        foreach (static::PARSING_PATTERNS as $key => $pattern) 
-            $value = str_replace($key, $pattern, $value);        
-        $value = sprintf('/^%s$/', $value);
+        return preg_replace(static::FUNCTION_PATTERN['pattern'],
+                            static::FUNCTION_PATTERN['replace'],
+                            $desc);
+    }
+    
+    public static function parse_path($path)
+    {
+        foreach (static::PATHS_PARSING_PATTERNS as $key => $pattern) 
+            $path = str_replace($key, $pattern, $path);        
+        return sprintf('/^%s$/', $path);
     }
 
     public static function get_config()
     {
-        $api_endpoints = sprintf('%sconfig/api_endpoints.json', \site::DIR);        
-        return \util\json::parse($api_endpoints);        
+        $config = \site::API_CONFIG;
+        return \util\yaml::parse($config);        
     }
 }
