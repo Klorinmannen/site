@@ -10,6 +10,7 @@ data/
 *.json~
 *.yml~
 *.*~
+p.php
 config.php
 .gitignore~
 git_stuff

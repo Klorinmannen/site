@@ -5,20 +5,20 @@ namespace util;
   Needs a PDO to be set to function
   Fetch style needs to be set on the PDO.
       
-  select fields can be either an array [ 'RealDatabaseFieldName', 'AnotherDatabaseFieldName' ]
+  select fields can be either an array [ 'RealDatabaseFieldName', 'AnotherDatabaseFieldName', ... ]
   or a well formated sql string without a SELECT statement.
 
-  where fields can be either an array [ 'RealDatabaseFieldName = SomeValue' ]
+  where fields can be either an array [ 'RealDatabaseFieldName' => SomeValue, ... ]
   or a well formated sql string without a WHERE statement.
       
 */
   
 class table
 {  
-    public const DEFAULT_SELECT = '*';
-    public const SELECT = 1;
-    public const UPDATE = 2;
-    public const INSERT = 3;
+    private const DEFAULT_SELECT = '*';
+    private const SELECT = 1;
+    private const UPDATE = 2;
+    private const INSERT = 3;
 
     private $_query_type;
     private $_table;
@@ -74,7 +74,6 @@ class table
     // Called to query the database/table after everything is 
     public function query()
     {
-
         switch ($this->_query_type) {
         case static::SELECT:
             self::create_select_sql();
@@ -96,7 +95,7 @@ class table
             
             break;
         default:
-            throw new \Exception('Unknown query type');
+            throw new \Exception('Unknown query type', 500);
             break;
         }
     }
@@ -105,7 +104,7 @@ class table
     public function update(array $fields)
     {
         if (!$fields)
-            throw new \Exception('Missing fields');
+            throw new \Exception('Missing fields', 500);
 
         $this->_query_type = static::UPDATE;
         self::create_update_fields_and_params($fields);
@@ -116,7 +115,7 @@ class table
     public function insert(array $fields)
     {
         if (!$fields)
-            throw new \Exception('Missing fields');
+            throw new \Exception('Missing fields', 500);
 
         $this->_query_type = static::INSERT;
         self::create_insert_fields_and_params($fields);
@@ -210,7 +209,6 @@ class table
                                $this->_table,
                                implode(', ', $this->_fields),
                                $this->_where );
-        var_dump($this->_sql);
     }
 
     private function create_insert_sql()

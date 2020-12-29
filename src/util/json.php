@@ -28,4 +28,12 @@ class json
         $json_string = static::get_string($path);
         return static::decode($json_string);
     }
+
+    public static function encode($to_encode)
+    {
+        $encoded = json_encode($to_encode);
+        if ($encoded === false)
+            throw new \Exception('Failed to encode json', 500);
+        return $encoded;
+    }
 }
