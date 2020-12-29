@@ -54,3 +54,4 @@ get_by_name:
           application/json:
             schema:
               $ref: '#/components/schemas/Pokemon'
+

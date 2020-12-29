@@ -9,3 +9,4 @@ paths:
     $ref: "pokemon.yml#/get_by_id"
   /api/pokemon/{name}:
     $ref: "pokemon.yml#/get_by_name"
+
