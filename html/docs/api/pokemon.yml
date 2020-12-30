@@ -3,10 +3,26 @@ components:
     Pokemon:
       type: object
       properties:
-        id:
+        pokemon_id:
           type: integer
+        pokemon_parent_id_list:
+          type: array
+          items:
+            type: integer
         name:
           type: string
+        dex_numer:
+          type: string
+        attack:
+          type: integer
+        defense:
+          type: integer
+        stamina:
+          type: integer
+        shiny:
+          type: integer
+        shadow:
+          type: integer
 get_list:
   get:
     summary: Returns a list of all pokemons
@@ -22,9 +38,10 @@ get_list:
               items:
                 $ref: '#/components/schemas/Pokemon'
 
-get_by_id:
+by_id:
   get:
-    summary: Returns pokemon corresponding to the given Pokédex ID
+    operationId: get_by_id  
+    summary: Returns pokemon corresponding to the given Pokédex id
     tags:
       - pokemon
     parameters:
@@ -37,6 +54,30 @@ get_by_id:
     responses:
       '200':
         description: A json object of a pokemon
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pokemon'
+  patch:
+    operationId: update_by_id  
+    summary: (Not useable) Update a pokemons data by its Pokédex id
+    tags:
+      - pokemon
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: int
+      - name: fields
+        description: Update necessary fields
+        in: body
+        required: true
+        schema:
+          $ref: '#/components/schemas/Pokemon'
+    responses:
+      '200':
+        description: true / false
         content:
           application/json:
             schema:
@@ -60,4 +101,4 @@ get_by_name:
           application/json:
             schema:
               $ref: '#/components/schemas/Pokemon'
-
+	      

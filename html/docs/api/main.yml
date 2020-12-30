@@ -11,6 +11,6 @@ paths:
   /pokemon:
     $ref: "pokemon.yml#/get_list"
   /pokemon/{id}:
-    $ref: "pokemon.yml#/get_by_id"
+    $ref: "pokemon.yml#/by_id"
   /pokemon/{name}:
     $ref: "pokemon.yml#/get_by_name"
