@@ -29,9 +29,9 @@ class json
         return static::decode($json_string);
     }
 
-    public static function encode($to_encode)
+    public static function encode($to_encode, $flag = JSON_PRETTY_PRINT)
     {
-        $encoded = json_encode($to_encode);
+        $encoded = json_encode($to_encode, $flag);
         if ($encoded === false)
             throw new \Exception('Failed to encode json', 500);
         return $encoded;

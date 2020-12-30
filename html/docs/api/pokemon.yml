@@ -10,6 +10,8 @@ components:
 get_list:
   get:
     summary: Returns a list of all pokemons
+    tags:
+      - pokemon
     responses:
       '200':
         description: A json object with a list of pokemons
@@ -23,6 +25,8 @@ get_list:
 get_by_id:
   get:
     summary: Returns pokemon corresponding to the given Pokédex ID
+    tags:
+      - pokemon
     parameters:
       - name: id
         in: path
@@ -41,6 +45,8 @@ get_by_id:
 get_by_name:
   get:
     summary: Returns pokemon corresponding to the given Pokémon name
+    tags:
+      - pokemon
     parameters:
       - name: name
         in: path

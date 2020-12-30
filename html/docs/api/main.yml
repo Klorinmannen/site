@@ -1,12 +1,16 @@
 openapi: 3.0.0
+servers:
+  - url: http://projom.se/api
 info:
   title: Projom.se Pokemon API documentation
   version: 1.0.0
+tags:
+  - name: pokemon
+    description: Query for your favorite pokemon!
 paths:
-  /api/pokemon:
+  /pokemon:
     $ref: "pokemon.yml#/get_list"
-  /api/pokemon/{id}:
+  /pokemon/{id}:
     $ref: "pokemon.yml#/get_by_id"
-  /api/pokemon/{name}:
+  /pokemon/{name}:
     $ref: "pokemon.yml#/get_by_name"
-

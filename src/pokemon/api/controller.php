@@ -3,74 +3,62 @@ namespace pokemon\api;
 
 class controller
 {
-    public const EMPTY_RESPONSE = 'Not found';
-
     public const GET_FIELDS = [ 'PokemonID' => 'pokemon_id',
-                                'ParentPokemonIDList' => 'parent_pokemon_id_list',
-                                'DexID' => 'dex_id',
+                                'ParentPokemonIDList' => 'parent_pokoemon_id_list',
+                                'DexID' => 'dex_number',
                                 'Name' => 'name',
                                 'Attack' => 'attack',
                                 'Defense' => 'defense',
                                 'Stamina' => 'stamina',
-                                'Shiny' => ['shiny', 'flag'],
-                                'Shadow' => ['shadow', 'flag'] ];
-        
+                                'Shiny' => 'shiny',
+                                'Shadow' => 'shadow' ];
+
+    public static function get_get_fields()
+    {
+        return array_keys(static::GET_FIELDS);
+    }
+    
     public static function get_by_id($id)
     {
         if (!validate_id($id))
-            throw new \Exception('bad request, invalid pokemon id', 400);
-        $pokemon_data = \pokemon\model::get_by_id($id);
+            throw new \Exception('Invalid pokemon id', 400);
+        $pokemon_data = \pokemon\model::get_by_id($id, static::get_get_fields());
         return static::prepare_response($pokemon_data);
     }
 
     public static function get_by_name($name)
     {
         $sanitized_name = sanitize_string($name);
-        $pokemon_data = \pokemon\model::get_by_name($sanitized_name);
+        $pokemon_data = \pokemon\model::get_by_name($sanitized_name, static::get_get_fields());
         return static::prepare_response($pokemon_data);
     }
         
     public static function get_list()
     {
-        $pokemon_data = \pokemon\model::get_list();        
+        $pokemon_data = \pokemon\model::get_list(static::get_get_fields());        
         return static::prepare_response($pokemon_data);
     }
 
     public static function prepare_response($pokemon_data)
     {
         if (!$pokemon_data)
-            throw new \Exception(static::EMPTY_RESPONSE, 404);
+            throw new \Exception('Pokemon not found', 404);
 
-        $response = [];
+        $response_data = [];
         if (isset($pokemon_data[0]))
             foreach ($pokemon_data as $pokemon)
-                $response[] = static::format_repsonse($pokemon);
+                $response_data[] = static::format_response($pokemon);
         else
-            $response = static::format_response($pokemon_data);
+            $response_data = static::format_response($pokemon_data);
 
-        return \util\json::encode($response);
+        return \util\json::encode($response_data);
     }
 
     public static function format_response($pokemon)
     {
-        $response_object = [];
-        foreach (static::GET_FIELDS as $db_field => $value_field) {
-
-            $field = $value_field;
-            $value = $pokemon[$db_field];
-            if (is_array($value_field)) {
-                switch ($value_field[1]) {
-                case 'flag':
-                    $field = $value_field[0];
-                    $value = $value == -1 ? 'yes' : 'no';
-                    break;
-                default:
-                    throw new \Exception('Unknown field type', 500);
-                    break;
-                }
-            }
-            $response_object[$field] = $value;
-        }
-        return $response_object;
+        $response = [];
+        foreach (static::GET_FIELDS as $db_field => $value_field)
+            $response[$value_field] = $pokemon[$db_field];
+        return $response;
     }
 }
