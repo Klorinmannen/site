@@ -42,7 +42,7 @@ class controller
     public static function prepare_response($pokemon_data)
     {
         if (!$pokemon_data)
-            throw new \Exception('Pokemon not found', 404);
+            throw new \Exception('Pokemon(s) not found', 404);
 
         $response_data = [];
         if (isset($pokemon_data[0]))
