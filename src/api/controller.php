@@ -1,41 +1,85 @@
 <?php
-ob_clean();
-$request = \api\request::parse();
-$controller = array_shift($request);
+namespace api;
 
-try {
+class controller
+{
+    private $_params;
+    private $_controller;
+    private $_lc_method;
+    private $_main_config;
+    private $_uri;
+    private $_endpoint;
+    private $_response;
+
+    public const PATH_PATTERNS = [ '{id}' => '\\d+',
+                                   '{name}' => '[a-zA-Z]+',
+                                   '/' => '\/' ];
     
-    // Does the requested controller exist?
-    $api_controller = sprintf('%s\api\controller', $controller);
-    if (!class_exists($api_controller))
-        throw new \Exception('Bad request, endpoint does not exist', 400);    
-    
-    // Map request to an defined endpoint if there is one
-    $uri = \api\request::parse_uri();
-    $endpoint = \api\router::map($_SERVER['REQUEST_METHOD'], $controller, $uri);
-
-    // Define the endpoint call
-    $api_endpoint = sprintf('%s\api\controller::%s', $controller, $endpoint);
-
-    // Make the actual endpoint call
-    $json_encoded_response_data = $api_endpoint( ...$request);
-
-    // Return response data and set response code
-    echo $json_encoded_response_data;   
-    http_response_code(200);        
-
-} catch (\Exception $e) {
-
-    switch ($e->getCode()) {
-    case 500:
-        http_response_code(500);        
-        break;
-    case 400:
-        echo $e->getMessage();
-        http_response_code(400);
-        break;
+    public function __construct($request)
+    {
+        $this->_uri = $request->get_uri();
+        $this->_params = $request->get_params();
+        $this->_controller = $request->get_controller();
+        $this->_lc_method = strtolower($_SERVER['REQUEST_METHOD']);
+        $this->_main_config = \api\config::get_main_config();
     }
-    exit;
-}
-    
 
+    public function map_endpoint()
+    {
+        $paths = $this->_main_config['paths'];
+        foreach ($paths as $path => $reference) {
+
+            $path_pattern = self::get_path_pattern($path);
+            if (preg_match($path_pattern, $this->_uri) === 1) {
+
+                $ref_parts = explode('#/', $reference['$ref']);
+                if (str_replace('.yml', '', $ref_parts[0]) == $this->_controller) {
+                    self::set_endpoint($ref_parts);
+                    return;
+                }
+            }            
+        }
+
+        // If no endpoint is found, exit
+        throw new \Exception('No endpoint found', 400);
+    }
+
+    public function get_path_pattern($path)
+    {
+        $path = ltrim($path, '/');
+        foreach (static::PATH_PATTERNS as $sign => $pattern)
+            $path = str_replace($sign, $pattern, $path);
+        return sprintf('/^%s$/', $path);
+    }
+
+    public function set_endpoint($ref_parts)
+    {
+        $referenced_endpoints = \api\config::get_referenced_config($ref_parts[0]);
+        $endpoint = $ref_parts[1];
+        
+        if (! isset($referenced_endpoints[$endpoint]))
+            throw new \Exception('Endpoint does not exist', 400);
+        if (! isset($referenced_endpoints[$endpoint][$this->_lc_method]))
+            throw new \Exception('Endpoint method does not exist', 400);
+        if (! isset($referenced_endpoints[$endpoint][$this->_lc_method]['operationId']))
+            throw new \Exception('Internal server error ', 500);
+        
+        $this->_endpoint = $referenced_endpoints[$endpoint][$this->_lc_method]['operationId'];
+    }
+
+    public function call_endpoint()
+    {
+        $call = $this->_endpoint;
+        $this->_response = static::$call( ...$this->_params);
+    }
+
+    public function get_json_encoded_response()
+    {
+        return \util\json::encode($this->_response, 0);
+    }
+
+    public function get_raw_response()
+    {
+        return $this->_response;
+    }
+}

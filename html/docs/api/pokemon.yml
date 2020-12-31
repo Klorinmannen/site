@@ -25,6 +25,7 @@ components:
           type: integer
 get_list:
   get:
+    operationId: get_list
     summary: Returns a list of all pokemons
     tags:
       - pokemon
@@ -83,8 +84,9 @@ by_id:
             schema:
               $ref: '#/components/schemas/Pokemon'
 
-get_by_name:
+by_name:
   get:
+    operationId: get_by_name
     summary: Returns pokemon corresponding to the given Pokémon name
     tags:
       - pokemon
@@ -100,5 +102,4 @@ get_by_name:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pokemon'
-	      
+              $ref: '#/components/schemas/Pokemon'	      

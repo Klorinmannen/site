@@ -1,7 +1,7 @@
 <?php
 namespace pokemon\api;
 
-class controller
+class controller extends \api\controller
 {
     public const GET_FIELDS = [ 'PokemonID' => 'pokemon_id',
                                 'ParentPokemonIDList' => 'parent_pokoemon_id_list',
@@ -51,7 +51,7 @@ class controller
         else
             $response_data = static::format_response($pokemon_data);
 
-        return \util\json::encode($response_data);
+        return $response_data;
     }
 
     public static function format_response($pokemon)
