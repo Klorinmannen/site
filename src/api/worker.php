@@ -2,34 +2,32 @@
 ob_clean();
 
 try {
-    // Handle new request
+
+    // Route new request
     $request = new \api\request();
-
-    // Instantiate the controller object
-    $endpoint_controller = $request->get_endpoint_controller();    
-    $controller = new $endpoint_controller($request);
-
+    $router = new \api\router($request);
+    
     // Map request to a defined endpoint
-    $controller->map_endpoint();
+    $router->map();
+
+    $routed_controller = $router->get_controller();
+    if (!class_exists($routed_controller))
+        throw new \Exception('Controller not found', 400);
+
+    $routed_method = $router->get_method();    
+    if (!method_exists($routed_controller, $routed_method))
+        throw new \Exception('Controller method not found', 500);
+
+    $controller = new $routed_controller($routed_method, $router->get_params(), $request->get_data());
     
     // Make endpoint call
-    $controller->call_endpoint();
-
-    // Return response data and set response code
-    echo $controller->get_json_encoded_response();
+    $controller->call();
 
     http_response_code(200);        
 
 } catch (\Exception $e) {
 
-    switch ($e->getCode()) {
-    case 500:
-        http_response_code(500);        
-        break;
-    case 400:
-        echo $e->getMessage();
-        http_response_code(400);
-        break;
-    }
+    echo $e->getMessage();
+    http_response_code($e->getCode());        
     exit;
 }

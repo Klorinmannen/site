@@ -10,7 +10,5 @@ tags:
 paths:
   /pokemon:
     $ref: "pokemon.yml#/get_list"
-  /pokemon/{id}:
-    $ref: "pokemon.yml#/by_id"
-  /pokemon/{name}:
-    $ref: "pokemon.yml#/by_name"
+  /pokemon/{id/name}:
+    $ref: "pokemon.yml#/get_by_string"

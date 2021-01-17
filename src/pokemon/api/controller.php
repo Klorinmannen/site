@@ -4,12 +4,8 @@ namespace pokemon\api;
 class controller extends \api\controller
 {
     public const GET_FIELDS = [ 'PokemonID' => 'pokemon_id',
-                                'ParentPokemonIDList' => 'parent_pokoemon_id_list',
                                 'DexID' => 'dex_number',
                                 'Name' => 'name',
-                                'Attack' => 'attack',
-                                'Defense' => 'defense',
-                                'Stamina' => 'stamina',
                                 'Shiny' => 'shiny',
                                 'Shadow' => 'shadow' ];
 
@@ -18,18 +14,14 @@ class controller extends \api\controller
         return array_keys(static::GET_FIELDS);
     }
     
-    public static function get_by_id($id)
+    public static function get_by_id_by_name($string)
     {
-        if (!validate_id($id))
-            throw new \Exception('Invalid pokemon id', 400);
-        $pokemon_data = \pokemon\model::get_by_id($id, static::get_get_fields());
-        return static::prepare_response($pokemon_data);
-    }
-
-    public static function get_by_name($name)
-    {
-        $sanitized_name = sanitize_string($name);
-        $pokemon_data = \pokemon\model::get_by_name($sanitized_name, static::get_get_fields());
+        if (validate_id($string)) {
+            $pokemon_data = \pokemon\model::get_by_id($string, static::get_get_fields());
+        } else {
+            $sanitized_name = sanitize_string($string);
+            $pokemon_data = \pokemon\model::get_by_name($sanitized_name, static::get_get_fields());
+        }
         return static::prepare_response($pokemon_data);
     }
         

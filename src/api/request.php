@@ -3,48 +3,45 @@ namespace api;
 
 class request
 {
-    private $_uri;
-    private $_params;
-    private $_controller;
-    private $_endpoint_controller;
-
+    private $_uri = null;
+    private $_method = null;
+    private $_input_data = null;
+    private $_json_data = null;
+    
     public function __construct()
     {
         self::set_request_uri();
-        self::set_params();
-        self::set_controller();
-        self::set_endpoint_controller();
-        self::validate_endpoint_controller();
+        self::set_method();
+        self::set_data();
     }
 
-    private function set_endpoint_controller()
+    private function set_data()
     {
-        $this->_endpoint_controller = sprintf('%s\api\controller', $this->_controller);
+        switch ($this->_method) {
+        case 'POST':
+        case 'PUT':
+        case 'PATCH':
+            $this->_input_data = file_get_contents('php://input');
+            if ($this->_input_data)
+                $this->_json_data = \util\json::decode($this->_input_data);
+            break;
+        default:
+            $this->_input_data = '';
+            break;
+        }
     }
-
-    private function validate_endpoint_controller()
+    
+    private function set_method()
     {
-        if (!class_exists($this->_endpoint_controller))
-            throw new \Exception('Endpoint does not exist', 400);    
+        $this->_method = $_SERVER['REQUEST_METHOD'];
     }
-
-    private function set_controller()
-    {
-        $this->_controller = array_shift($this->_params);
-    }
-
-    private function set_params()
-    {
-        $this->_params = explode('/', $this->_uri);
-    }
-
+    
     private function set_request_uri()
     {
-        $this->_uri = preg_replace('/\/api\//', '', $_SERVER['REQUEST_URI']);
+        $this->_uri = str_replace('/api', '', $_SERVER['REQUEST_URI']);
     }
 
-    public function get_params() { return $this->_params; }
-    public function get_controller() { return $this->_controller; }
-    public function get_endpoint_controller() { return $this->_endpoint_controller; }    
+    public function get_data() { return $this->_json_data; }
     public function get_uri() { return $this->_uri; }
+    public function get_method() { return $this->_method; }
 }
