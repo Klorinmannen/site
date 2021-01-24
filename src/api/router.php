@@ -5,52 +5,61 @@ class router
 {
     private $_config = null;
     private $_request = null;
-
     private $_controller = null;
     private $_params = null;
-    private $_method = null;
+    private $_endpoint = null;
+    
+    public const CONTROLLER_PATH = '\\api\\controller';
+    public const PARAM_PATTERNS = [ '/{id}/' => '([0-9]+)',
+                                    '/{string}/' => '([a-zA-Z0-9]+)',
+                                    '/{name}/' => '([a-zA-Z]+)',
+                                    '/{state}/' => '([a-zA-Z]+)' ];
     
     public function __construct($request)
     {
         $this->_config = new \api\config();
         $this->_request = $request;
     }
-
+    
     public function map()
     {
         $routes = self::get_routes();
         $uri = $this->_request->get_uri();
-        $parameters = [];
-        $method = '';
-        foreach ($routes as $route_pattern => $route_method) {
-            preg_match($route_pattern, $uri, $params);
-            if (isset($params[0])) {
 
-                // The first match is the matched uri itself
-                array_shift($params);
-
-                $parameters = $params;
-                $method = $route_method;
-                
-                break;
-            }
-        }
-
-        self::set_controller($uri, $parameters);
-        $this->_params = $parameters;
-        $this->_method = $method;
-
-        if (!$this->_method)
+        // Match request-path against defined path patterns endpoints
+        if (!$matched = self::match_path_route($routes, $uri))
             throw new \Exception('Endpoint not found', 400);
+
+        // The first match is the matched path itself
+        array_shift($matched['parameters']);
+
+        $resource = self::prepare_resource($matched['resource']);
+        
+        $this->_controller = self::create_controller($resource);
+        $this->_params = $matched['parameters'];
+        $this->_endpoint = $matched['endpoint'];
     }
 
-    private function set_controller($uri, $params)
+    private function match_path_route($routes, $uri)
     {
-        $controller = $uri;
-        if (isset($params[0]))
-            $controller = substr($uri, 0, strpos($uri, $params[0]));
+        foreach ($routes as $route_pattern => $route)        
+            if (preg_match($route_pattern, $uri, $parameters) === 1)
+                return [ 'parameters' => $parameters,
+                         'endpoint' => $route['endpoint'],
+                         'resource' => $route['resource'] ];
+        return false;
+    }
 
-        $this->_controller = str_replace('/', '\\', trim($controller, '/')).'\\api\\controller';
+    private function prepare_resource($resource)
+    {
+        $resource = trim($resource, '/');
+        $resource = str_replace('/', '\\', $resource);
+        return $resource;
+    }
+    
+    private function create_controller($resource)
+    {
+        return sprintf('%s%s', $resource, static::CONTROLLER_PATH);
     }
 
     private function get_routes()
@@ -60,32 +69,37 @@ class router
 
         $method = strtolower($method);
         if (! isset($routes[$method]))
-            throw new \Exception('No endpoint present with given method error', 400);        
-        
-        return self::swap_in_route_patterns($routes[$method]);
+            throw new \Exception('No endpoints found with the used method', 400);        
+
+        $routes = $routes[$method]; 
+        ksort($routes);
+
+        return self::swap_in_route_patterns($routes);
     }
 
     private function swap_in_route_patterns($routes)
     {
-        $pattern_routes = [];
-        foreach ($routes as $route => $method) {
+        $route_patterns = [];
+        foreach ($routes as $route => $route_endpoint) {
             $route_pattern = self::create_pattern_from_route($route);
-            $pattern_routes[$route_pattern] = $method;
+            $route_patterns[$route_pattern] = $route_endpoint;
         }
-        return $pattern_routes;
+        return $route_patterns;
     }
 
     private function create_pattern_from_route($route)
     {
-        // The order is important
-        $route_pattern = preg_replace('/{[^}]+}/', '(\w+)', $route);
+        $route_pattern = $route;
+        foreach (static::PARAM_PATTERNS as $param => $pattern)
+            $route_pattern = preg_replace($param, $pattern, $route_pattern);
+
         $route_pattern = preg_replace('/\//', '\/', $route_pattern);
         $route_pattern = sprintf('/^%s$/', $route_pattern);        
         return $route_pattern;
     }
     
     public function get_params() { return $this->_params; }
-    public function get_method() { return $this->_method; }
+    public function get_method() { return $this->_endpoint; }
     public function get_controller() { return $this->_controller; }
-    public function get_routing_info() { return [ 'controller' => $this->_controller, 'method' => $this->_method, 'params' => $this->_params ]; }
+    public function get_routing_info() { return [ 'controller' => $this->_controller, 'method' => $this->_endpoint, 'params' => $this->_params ]; }
 }

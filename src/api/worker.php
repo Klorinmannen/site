@@ -6,7 +6,7 @@ try {
     // Route new request
     $request = new \api\request();
     $router = new \api\router($request);
-    
+
     // Map request to a defined endpoint
     $router->map();
 
@@ -17,7 +17,7 @@ try {
     $routed_method = $router->get_method();    
     if (!method_exists($routed_controller, $routed_method))
         throw new \Exception('Controller method not found', 500);
-
+    
     $controller = new $routed_controller($routed_method, $router->get_params(), $request->get_data());
     
     // Make endpoint call

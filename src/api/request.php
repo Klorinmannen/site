@@ -40,7 +40,7 @@ class request
     {
         $this->_uri = str_replace('/api', '', $_SERVER['REQUEST_URI']);
     }
-
+    
     public function get_data() { return $this->_json_data; }
     public function get_uri() { return $this->_uri; }
     public function get_method() { return $this->_method; }

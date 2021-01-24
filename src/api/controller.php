@@ -24,7 +24,7 @@ class controller
 
     public function get_json_encoded_response($response)
     {
-        $no_pretty_print = 0;
+        $no_pretty_print = 1;
         return \util\json::encode($response, $no_pretty_print);
     }
 }

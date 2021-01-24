@@ -21,14 +21,16 @@ class config
         foreach ($paths as $uri_path => $path) {
             $endpoints = explode('#/', $path['$ref']);
             $conf_file = $endpoints[0];
-            $conf_path = $endpoints[1];
-            $controller = str_replace('.yml', '', $conf_file);
+            $conf_name = $endpoints[1];
+            $resource = str_replace('.yml', '', $conf_file);
 
             $ref_config = self::get_referenced_config($conf_file);
-            $conf_details = $ref_config[$conf_path];            
-            foreach ($conf_details as $method => $details)
-                $routes[$method][$uri_path] = $details['operationId'];
-        }           
+            $conf_details = $ref_config[$conf_name];            
+            foreach ($conf_details as $method => $details) {
+                $routes[$method][$uri_path]['endpoint'] = $details['operationId'];
+                $routes[$method][$uri_path]['resource'] = $resource;
+            }
+        }
         $this->_routes = $routes;
     }
     
