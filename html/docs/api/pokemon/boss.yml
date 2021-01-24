@@ -67,8 +67,8 @@ get_boss_list:
 
 get_boss_shiny:
   get:
-    operationId: get_shiny  
-    summary: Returns a list of pokemon bosses corresponding to the given state
+    operationId: get_shiny_list  
+    summary: Returns a list of shiny pokemon bosses
     tags:
       - Pokemon boss
     responses:

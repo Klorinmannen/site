@@ -12,7 +12,9 @@ paths:
     $ref: "pokemon.yml#/get_list"
   /pokemons/{string}:
     $ref: "pokemon.yml#/get_by_string"
-  /pokemon/bosses:
+  /pokemons/shinies:
+    $ref: "pokemon.yml#/get_pokemon_shiny"
+  /pokemons/bosses:
     $ref: "pokemon/boss.yml#/get_boss_list"
-  /pokemon/boss/shinies:
+  /pokemons/bosses/shinies:
     $ref: "pokemon/boss.yml#/get_boss_shiny"

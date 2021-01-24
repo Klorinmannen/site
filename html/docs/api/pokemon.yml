@@ -5,10 +5,6 @@ components:
       properties:
         pokemon_id:
           type: integer
-        pokemon_parent_id_list:
-          type: array
-          items:
-            type: integer
         name:
           type: string
         dex_numer:
@@ -17,6 +13,18 @@ components:
           type: integer
         shadow:
           type: integer
+    ShinyPokemon:
+      type: object
+      properties:
+        pokemon_id:
+          type: integer
+        name:
+          type: string
+        dex_numer:
+          type: string
+        shadow:
+          type: integer
+
 get_list:
   get:
     operationId: get_list
@@ -52,3 +60,17 @@ get_by_string:
           application/json:
             schema:
               $ref: '#/components/schemas/Pokemon'
+
+get_pokemon_shiny:
+  get:
+    operationId: get_shiny_list  
+    summary: Returns a list of shiny pokemons
+    tags:
+      - Pokemon
+    responses:
+      '200':
+        description: A json object of a pokemon
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShinyPokemon'
