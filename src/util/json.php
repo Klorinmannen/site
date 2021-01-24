@@ -29,9 +29,14 @@ class json
         return static::decode($json_string);
     }
 
-    public static function encode($to_encode, $flag = JSON_PRETTY_PRINT)
+    public static function encode($to_encode, $pp = 0)
     {
-        $encoded = json_encode($to_encode, $flag);
+        $encoded = '';
+        if ($pp)
+            $encoded = json_encode($to_encode, JSON_PRETTY_PRINT);
+        else
+            $encoded = json_encode($to_encode);
+        
         if ($encoded === false)
             throw new \Exception('Failed to encode json', 500);
         return $encoded;
