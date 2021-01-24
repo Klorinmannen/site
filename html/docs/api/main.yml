@@ -5,10 +5,15 @@ info:
   title: Projom.se Pokemon API documentation
   version: 1.0.0
 tags:
-  - name: pokemon
+  - name: Pokemon
     description: Query for your favorite pokemon!
 paths:
-  /pokemon:
+  /pokemons:
     $ref: "pokemon.yml#/get_list"
-  /pokemon/{id/name}:
+  /pokemons/{string}:
     $ref: "pokemon.yml#/get_by_string"
+
+  /pokemon/bosses:
+    $ref: "pokemon/boss.yml#/get_boss_list"
+  /pokemon/boss/shinies:
+    $ref: "pokemon/boss.yml#/get_boss_shiny"

@@ -13,12 +13,6 @@ components:
           type: string
         dex_numer:
           type: string
-        attack:
-          type: integer
-        defense:
-          type: integer
-        stamina:
-          type: integer
         shiny:
           type: integer
         shadow:
@@ -28,7 +22,7 @@ get_list:
     operationId: get_list
     summary: Returns a list of all pokemons
     tags:
-      - pokemon
+      - Pokemon
     responses:
       '200':
         description: A json object with a list of pokemons
@@ -44,9 +38,9 @@ get_by_string:
     operationId: get_by_id_by_name  
     summary: Returns a pokemon corresponding to the given Pokédex id or its name
     tags:
-      - pokemon
+      - Pokemon
     parameters:
-      - name: id/name
+      - name: id
         in: path
         required: true
         schema:
@@ -54,30 +48,6 @@ get_by_string:
     responses:
       '200':
         description: A json object of a pokemon
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pokemon'
-  patch:
-    operationId: update_by_id  
-    summary: (Not useable) Update a pokemons data by its Pokédex id
-    tags:
-      - pokemon
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: int
-      - name: fields
-        description: Update necessary fields
-        in: body
-        required: true
-        schema:
-          $ref: '#/components/schemas/Pokemon'
-    responses:
-      '200':
-        description: true / false
         content:
           application/json:
             schema:

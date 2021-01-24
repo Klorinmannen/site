@@ -1,0 +1,80 @@
+components:
+  schemas:
+    Boss:
+      type: object
+      properties:
+        pokemon_id:
+          type: integer
+        pokemon_name:
+          type: string
+        dex_number:
+          type: string
+        shiny:
+          type: integer
+        pokemon_form:
+          type: string
+        pokemon_tier:
+          type: integer
+        pokemon_tier_name:
+          type: string
+        min_cp:
+          type: integer
+        max_cp:
+          type: integer
+        boosted_min_cp:
+          type: integer
+        boosted_max_cp:
+          type: integer
+    ShinyBoss:
+      type: object
+      properties:
+        pokemon_id:
+          type: integer
+        pokemon_name:
+          type: string
+        dex_number:
+          type: string
+        pokemon_form:
+          type: string
+        pokemon_tier:
+          type: integer
+        pokemon_tier_name:
+          type: string
+        min_cp:
+          type: integer
+        max_cp:
+          type: integer
+        boosted_min_cp:
+          type: integer
+        boosted_max_cp:
+          type: integer
+
+get_boss_list:
+  get:
+    operationId: get_list
+    summary: Returns a list of all active pokemon bosses
+    tags:
+      - Pokemon boss
+    responses:
+      '200':
+        description: A json object list of active pokemon bosses
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Boss'
+
+get_boss_shiny:
+  get:
+    operationId: get_shiny  
+    summary: Returns a list of pokemon bosses corresponding to the given state
+    tags:
+      - Pokemon boss
+    responses:
+      '200':
+        description: A json object list of pokemon bosses
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShinyBoss'
