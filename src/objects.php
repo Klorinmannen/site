@@ -24,3 +24,8 @@ function user()
 {
     return $_SESSION['user'];
 }
+
+function subject()
+{
+    return $GLOBALS['subject'];
+}

@@ -27,7 +27,7 @@ class controller extends \api\controller
         return static::prepare_response($pokemon_data);
     }
 
-    public static function get_shiny()
+    public static function get_shiny_list()
     {
         $boss_data = \pokemon\boss\model::get_shiny(self::get_get_fields());        
         return static::prepare_response($boss_data);

@@ -31,6 +31,12 @@ class controller extends \api\controller
         return static::prepare_response($pokemon_data);
     }
 
+    public static function get_shiny_list()
+    {
+        $pokemon_data = \pokemon\model::get_shiny_list(static::get_get_fields());        
+        return static::prepare_response($pokemon_data);
+    }
+
     public static function prepare_response($pokemon_data)
     {
         if (!$pokemon_data)
@@ -43,6 +49,7 @@ class controller extends \api\controller
         else
             $response_data = static::format_response($pokemon_data);
 
+        $response_data['return_count'] = count($response_data);
         return $response_data;
     }
 

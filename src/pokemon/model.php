@@ -8,6 +8,11 @@ class model
         return table('Pokemon')->select($fields)->query();
     }
 
+    public static function get_shiny_list(array $fields = [])
+    {
+        return table('Pokemon')->select($fields)->where('Shiny <> 0')->query();
+    }
+    
     public static function get_by_id(int $id, array $fields = [])
     {
         return table('Pokemon')->select($fields)->where(['PokemonID' => $id])->query();

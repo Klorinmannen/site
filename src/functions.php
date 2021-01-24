@@ -7,6 +7,14 @@ const INT_PATTERN = '/^-[0-9]+$|^[0-9]+$/';
 const STRING_PATTERN = '/^[\w]+$/';
 const STRING_SANITIZE_PATTERN = '/[^\w]/';
 
+function advance_array(array &$array)
+{
+    // Returns boolean false if the pointer is out of scope
+    $current = current($array);
+    next($array);
+    return $current;
+}
+
 function sanitize_string(string $string, $pattern = STRING_SANITIZE_PATTERN)
 {
     return preg_replace($pattern, '', $string);
