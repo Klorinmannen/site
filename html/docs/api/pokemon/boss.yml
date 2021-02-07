@@ -25,36 +25,15 @@ components:
           type: integer
         boosted_max_cp:
           type: integer
-    ShinyBoss:
-      type: object
-      properties:
-        pokemon_id:
-          type: integer
-        pokemon_name:
-          type: string
-        dex_number:
-          type: string
-        pokemon_form:
-          type: string
-        pokemon_tier:
-          type: integer
-        pokemon_tier_name:
-          type: string
-        min_cp:
-          type: integer
-        max_cp:
-          type: integer
-        boosted_min_cp:
-          type: integer
-        boosted_max_cp:
-          type: integer
 
-get_boss_list:
+pokemon_boss:
   get:
-    operationId: get_list
+    operationId: get_boss_list
     summary: Returns a list of all active pokemon bosses
     tags:
-      - Pokemon boss
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
     responses:
       '200':
         description: A json object list of active pokemon bosses
@@ -64,17 +43,103 @@ get_boss_list:
               type: array
               items:
                 $ref: '#/components/schemas/Boss'
+  patch:
+    operationId: update_boss
+    summary: Updates an existing boss
+    tags:
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: A json object of the boss with the new data
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Boss'
+  post:
+    operationId: add_new_boss
+    summary: Adds new pokemon as a boss
+    tags:
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: A json object of the new pokemon boss
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Boss'
 
 get_boss_shiny:
   get:
-    operationId: get_shiny_list  
+    operationId: get_boss_shiny_list  
     summary: Returns a list of shiny pokemon bosses
     tags:
-      - Pokemon boss
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
     responses:
       '200':
         description: A json object list of pokemon bosses
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ShinyBoss'
+              type: array
+              items:
+                $ref: '#/components/schemas/Boss'
+
+get_boss_by_id:
+  get:
+    operationId: get_boss_by_id  
+    summary: Returns a pokemon boss by its pokemon id
+    tags:
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: pokedex id
+    responses:
+      '200':
+        description: A json object list of pokemon bosses
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Boss'
+
+catch:
+  post:
+    operationId: add_new_catch  
+    summary: Add new caught boss by user id
+    tags:
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: user id
+    responses:
+      '200':
+        description: A json object of the caught boss
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Boss'

@@ -49,7 +49,6 @@ class controller extends \api\controller
         else
             $response_data = static::format_response($pokemon_data);
 
-        $response_data['return_count'] = count($response_data);
         return $response_data;
     }
 

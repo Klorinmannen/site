@@ -72,10 +72,10 @@ class table
         return $this;
     }
 
-    // First argument is for the "in use / from" table
-    // Second argument is for the table "to join on"
+    // First argument is the table "in use / from"
+    // Second argument is the table "to join on"
     // Assuming structure for both arguments: [ 'RealTableFieldName', 'RealTableFieldName' ]
-    // Assumption: if join() is called withr string so must on()
+    // Assumption: if join() is called with string so must on()
     public function on($table_field_names, $other_field_values = null)
     {
         $this_fields = $table_field_names;
@@ -109,8 +109,8 @@ class table
 
     // Assuming well formed sql-string or array
     // A well formed sql-string includes the full statement, 'ORDER BY Xxx.Xxx ASC, Xxx.Xxx DESC, Xxx.Xxx ASC'    
-    // Assuming array contains [ 'ASC' => 'RealTableFieldName', 'DESC' => 'AnotherRealTableFieldName', 'AThirdRealTableFieldName' ]
-    // It is not mandatory for array to contain sort order key as the third example shows
+    // Assuming array, contains [ 'ASC' => 'RealTableFieldName', 'DESC' => 'AnotherRealTableFieldName', 'AThirdRealTableFieldName' ]
+    // It is not mandatory for array to contain sort order key as the third element shows
     public function order($order_by)
     {
         self::set_order_by($order_by);
@@ -125,6 +125,12 @@ class table
         $this->_query_type = static::SELECT;
         self::create_select_fields_and_params($fields);
         return $this;
+    }
+
+    // Shorthand for select() 
+    public function get($fields = null)
+    {
+        return self::select($fields);
     }
     
     // Assuming $fields =  [ 'RealTableFieldName' => its value ]
@@ -149,6 +155,12 @@ class table
         return $this;
     }
 
+    // Shorthand for insert()
+    public function add(array $fields = [])
+    {
+        return self::insert();
+    }
+    
     // Called to query the database/table after everything is 
     public function query(bool $query = true)
     {
@@ -166,8 +178,9 @@ class table
             self::create_update_sql();
             if ($query) {
                 self::make_query();
-                return $this->_pdo->rowCount();
+                return $this->_query->rowCount();
             }
+
             break;
         case static::INSERT:
             self::create_insert_sql();
@@ -175,16 +188,23 @@ class table
                 self::make_query();
                 return $this->_pdo->lastInsertId();
             }
+
             break;
         default:
             throw new \Exception('Unknown query type', 500);
             break;
         }
 
-        echo self::get_sql();
+        self::echo_sql();
         return $this;
     }
-        
+
+    // Shorthand for query()
+    public function q(bool $query = true)
+    {
+        return self::query($query);
+    }
+    
     private function create_select_fields_and_params($fields)
     {
         $this->_select = static::DEFAULT_SELECT;
@@ -208,7 +228,7 @@ class table
     {
         foreach ($fields as $db_field => $value) {
             $value_field = self::get_value_field($db_field);
-            $this->_fields_sql[] = $db_field;
+            $this->_fields[] = $db_field;
             $this->_values[] = sprintf(':%s', $value_field);
             $this->_params[$value_field] = $value;
         }
@@ -343,6 +363,6 @@ class table
     }
 
     public function get_where() { return $this->_where; }
-    public function get_sql() { return $this->_sql; }
+    public function echo_sql() { return \util\debug::sql($this->_sql); }
     public function get_records() { return $this->_records; }
 }

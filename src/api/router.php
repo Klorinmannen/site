@@ -11,7 +11,7 @@ class router
     
     public const CONTROLLER_PATH = '\\api\\controller';
     public const PARAM_PATTERNS = [ '/{id}/' => '([0-9]+)',
-                                    '/{string}/' => '([a-zA-Z0-9]+)',
+                                    '/{id\/name}/' => '([a-zA-Z0-9]+)',
                                     '/{name}/' => '([a-zA-Z]+)',
                                     '/{state}/' => '([a-zA-Z]+)' ];
     
@@ -30,6 +30,10 @@ class router
         if (!$matched = self::match_path_route($routes, $uri))
             throw new \Exception('Endpoint not found', 400);
 
+        if ($matched['security'])
+            if (!self::validate_security())
+                throw new \Exception('Authorization error', 401);
+        
         // The first match is the matched path itself
         array_shift($matched['parameters']);
 
@@ -40,13 +44,24 @@ class router
         $this->_endpoint = $matched['endpoint'];
     }
 
+    private function validate_security()
+    {
+        $jwt = $this->_request->get_jwt();
+        if ($jwt === null)
+            return false;
+        if (! \util\jwt::validate($jwt))
+            return false;
+        return true;
+    }
+        
     private function match_path_route($routes, $uri)
     {
         foreach ($routes as $route_pattern => $route)        
             if (preg_match($route_pattern, $uri, $parameters) === 1)
                 return [ 'parameters' => $parameters,
                          'endpoint' => $route['endpoint'],
-                         'resource' => $route['resource'] ];
+                         'resource' => $route['resource'],
+                         'security' => $route['security'] ];
         return false;
     }
 

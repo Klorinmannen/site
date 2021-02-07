@@ -7,6 +7,11 @@ const INT_PATTERN = '/^-[0-9]+$|^[0-9]+$/';
 const STRING_PATTERN = '/^[\w]+$/';
 const STRING_SANITIZE_PATTERN = '/[^\w]/';
 
+function match_pattern($pattern, $subject)
+{
+    return (preg_match($pattern, $subject) === 1);
+}    
+
 function advance_array(array &$array)
 {
     // Returns boolean false if the pointer is out of scope

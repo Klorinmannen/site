@@ -19,10 +19,14 @@ try {
         throw new \Exception('Controller method not found', 500);
     
     $controller = new $routed_controller($routed_method, $router->get_params(), $request->get_data());
-    
+   
     // Make endpoint call
-    $controller->call();
+    $response = $controller->call();
 
+    // Return result/response
+    header('Content-Type: application/json');
+    echo $response;
+    
     http_response_code(200);        
 
 } catch (\Exception $e) {

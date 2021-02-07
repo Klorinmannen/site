@@ -49,6 +49,7 @@ class user
 	public function get_user_name() { return $this->_user_name; }
 	public function get_user_id() { return $this->_user_id; }
 	public function get_page_id() { return $this->_page_id; }
+    public function get_jwt_key() { return $this->_jwt_key; }
     public function get_status() { return $this->_status; }
     public function get_page_permission() {return $this->_page_permission; }
 }

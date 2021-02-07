@@ -21,13 +21,13 @@ class controller extends \api\controller
         return array_keys(static::GET_FIELDS);
     }
             
-    public static function get_list()
+    public static function get_boss_list()
     {
         $pokemon_data = \pokemon\boss\model::get_list(self::get_get_fields());        
         return static::prepare_response($pokemon_data);
     }
 
-    public static function get_shiny_list()
+    public static function get_boss_shiny_list()
     {
         $boss_data = \pokemon\boss\model::get_shiny(self::get_get_fields());        
         return static::prepare_response($boss_data);
@@ -45,7 +45,6 @@ class controller extends \api\controller
         else
             $response_data = static::format_response($data);
 
-        $response_data['return_count'] = count($response_data);
         return $response_data;
     }
 

@@ -5,7 +5,6 @@ class controller
 {
     private $_params;
     private $_method;
-
     protected $_data;
     
     public function __construct($method, $params, $data)
@@ -19,7 +18,8 @@ class controller
     {
         $call = $this->_method;
         $response = static::$call( ...$this->_params);
-        echo self::get_json_encoded_response($response);
+
+        return self::get_json_encoded_response($response);
     }
 
     public function get_json_encoded_response($response)

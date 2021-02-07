@@ -1,20 +1,50 @@
 openapi: 3.0.0
-servers:
-  - url: http://projom.se/api
 info:
-  title: Projom.se Pokemon API documentation
-  version: 1.0.0
+  title: "Projom.se Pokemon API documentation"
+  version: 0.0.1
+
+servers:
+ - url: http://projom.se/api
+   description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+ - bearerAuth: []
+
 tags:
-  - name: Pokemon
-    description: Query for your favorite pokemon!
+  - name: "Pokemons"
+    description: "Query for your favorite pokemons!"
+  - name: "Pokemon bosses"
+    description: "Query for your favorite pokemon bosses!"
+  - name: "User"
+    description: "User things"
 paths:
-  /pokemons:
-    $ref: "pokemon.yml#/get_list"
-  /pokemons/{string}:
-    $ref: "pokemon.yml#/get_by_string"
-  /pokemons/shinies:
+  /user/login:
+    $ref: "user.yml#/user"
+
+  /pokemon:
+    $ref: "pokemon.yml#/pokemon"
+  /pokemon/{id}:
+    $ref: "pokemon.yml#/get_by_id"
+  /pokemon/shiny:
     $ref: "pokemon.yml#/get_pokemon_shiny"
-  /pokemons/bosses:
-    $ref: "pokemon/boss.yml#/get_boss_list"
-  /pokemons/bosses/shinies:
+  /pokemon/hatch/{id}:
+    $ref: "pokemon.yml#/hatch"
+  /pokemon/catch/{id}:
+    $ref: "pokemon.yml#/catch"
+
+  /pokemon/boss:
+    $ref: "pokemon/boss.yml#/pokemon_boss"
+  /pokemon/boss/shiny:
     $ref: "pokemon/boss.yml#/get_boss_shiny"
+  /pokemon/boss/{id}:
+    $ref: "pokemon/boss.yml#/get_boss_by_id"
+  /pokemon/boss/catch/{id}:
+    $ref: "pokemon/boss.yml#/catch"
+

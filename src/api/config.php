@@ -10,11 +10,15 @@ class config
     
     public function __construct()
     {
-        self::set_routes();
+        // Quick access no need to parse the configuration again
+        if (isset($_SESSION['api_config']))
+            $this->_routes = $_SESSION['api_config'];
+        else 
+            self::set_routes();
     }
 
     public function set_routes()
-    {
+    {       
         $main_conf_file = self::get_main_config();
         $paths = $main_conf_file['paths'];
         $routes = [];
@@ -28,9 +32,12 @@ class config
             $conf_details = $ref_config[$conf_name];            
             foreach ($conf_details as $method => $details) {
                 $routes[$method][$uri_path]['endpoint'] = $details['operationId'];
+                $routes[$method][$uri_path]['security'] = $details['security'];
                 $routes[$method][$uri_path]['resource'] = $resource;
             }
         }
+        
+        $_SESSION['api_config'] = $routes;
         $this->_routes = $routes;
     }
     
