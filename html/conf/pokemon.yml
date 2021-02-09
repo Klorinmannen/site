@@ -32,7 +32,7 @@ pokemon:
               items:
                 $ref: '#/components/schemas/Pokemon'
   patch:
-    operationId: update_pokemon
+    operationId: update
     summary: Update existing pokemon with new data
     tags:
       - Pokemons
@@ -48,7 +48,7 @@ pokemon:
               items:
                 $ref: '#/components/schemas/Pokemon'
   post:
-    operationId: add_new
+    operationId: add
     summary: Add new pokemon
     tags:
       - Pokemons
@@ -112,13 +112,6 @@ hatch:
       - Pokemons
     security:
       - bearerAuth: []
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: pokedex name
     responses:
       '200':
         description: A json object of hatched pokemon
@@ -134,13 +127,6 @@ catch:
       - Pokemons
     security:
       - bearerAuth: []
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: pokedex name
     responses:
       '200':
         description: A json object of the caught pokemon

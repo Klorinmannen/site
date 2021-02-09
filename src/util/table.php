@@ -137,7 +137,7 @@ class table
     public function update(array $fields = [])
     {
         if (!$fields)
-            throw new \Exception('Missing fields', 500);
+            return 0;
 
         $this->_query_type = static::UPDATE;
         self::create_update_fields_and_params($fields);
@@ -148,7 +148,7 @@ class table
     public function insert(array $fields = [])
     {
         if (!$fields)
-            throw new \Exception('Missing fields', 500);
+            return 0;
 
         $this->_query_type = static::INSERT;
         self::create_insert_fields_and_params($fields);

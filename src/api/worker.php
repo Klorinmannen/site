@@ -10,15 +10,19 @@ try {
     // Map request to a defined endpoint
     $router->map();
 
-    $routed_controller = $router->get_controller();
-    if (!class_exists($routed_controller))
-        throw new \Exception('Controller not found', 400);
+    $routed_resource_controller = $router->get_resource_api_controller();
+    if (!class_exists($routed_resource_controller))
+        throw new \Exception('Controller not found', 500);
 
     $routed_method = $router->get_method();    
-    if (!method_exists($routed_controller, $routed_method))
+    if (!method_exists($routed_resource_controller, $routed_method))
         throw new \Exception('Controller method not found', 500);
     
-    $controller = new $routed_controller($routed_method, $router->get_params(), $request->get_data());
+    $routed_resource_model = $router->get_resource_api_model();
+    if (!class_exists($routed_resource_model))
+        throw new \Exception('Resource model not found', 500);
+    
+    $controller = new $routed_resource_controller($routed_method, $router->get_params(), $request->get_data(), $routed_resource_model);
    
     // Make endpoint call
     $response = $controller->call();

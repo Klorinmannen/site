@@ -14,16 +14,14 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-security:
- - bearerAuth: []
-
 tags:
   - name: "Pokemons"
     description: "Query for your favorite pokemons!"
   - name: "Pokemon bosses"
     description: "Query for your favorite pokemon bosses!"
   - name: "User"
-    description: "User things"
+    description: "User stuff"
+
 paths:
   /user/login:
     $ref: "user.yml#/user"
@@ -34,9 +32,9 @@ paths:
     $ref: "pokemon.yml#/get_by_id"
   /pokemon/shiny:
     $ref: "pokemon.yml#/get_pokemon_shiny"
-  /pokemon/hatch/{id}:
+  /pokemon/hatch:
     $ref: "pokemon.yml#/hatch"
-  /pokemon/catch/{id}:
+  /pokemon/catch:
     $ref: "pokemon.yml#/catch"
 
   /pokemon/boss:
@@ -44,7 +42,7 @@ paths:
   /pokemon/boss/shiny:
     $ref: "pokemon/boss.yml#/get_boss_shiny"
   /pokemon/boss/{id}:
-    $ref: "pokemon/boss.yml#/get_boss_by_id"
-  /pokemon/boss/catch/{id}:
+    $ref: "pokemon/boss.yml#/get_by_id"
+  /pokemon/boss/catch:
     $ref: "pokemon/boss.yml#/catch"
 

@@ -3,8 +3,8 @@ namespace api;
 
 class config
 {
-    public const CONFIG_PATH = '/var/www/site/html/docs/api/';
-    public const MAIN_CONFIG_PATH = '/var/www/site/html/docs/api/main.yml';
+    public const CONFIG_PATH = '/var/www/site/html/conf/';
+    public const MAIN_CONFIG_PATH = '/var/www/site/html/conf/main.yml';
 
     private $_routes = null;
     

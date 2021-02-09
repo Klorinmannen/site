@@ -5,13 +5,14 @@ class router
 {
     private $_config = null;
     private $_request = null;
-    private $_controller = null;
+    private $_resource_api_controller = null;
+    private $_resource_api_model = null;
     private $_params = null;
     private $_endpoint = null;
     
-    public const CONTROLLER_PATH = '\\api\\controller';
+    public const RESOURCE_API_CONTROLLER = '\\api\\controller';
+    public const RESOURCE_API_MODEL = '\\api\\model';
     public const PARAM_PATTERNS = [ '/{id}/' => '([0-9]+)',
-                                    '/{id\/name}/' => '([a-zA-Z0-9]+)',
                                     '/{name}/' => '([a-zA-Z]+)',
                                     '/{state}/' => '([a-zA-Z]+)' ];
     
@@ -30,8 +31,8 @@ class router
         if (!$matched = self::match_path_route($routes, $uri))
             throw new \Exception('Endpoint not found', 400);
 
-        if ($matched['security'])
-            if (!self::validate_security())
+        if (1 && $matched['security'])
+            if (! self::validate_security())
                 throw new \Exception('Authorization error', 401);
         
         // The first match is the matched path itself
@@ -39,7 +40,8 @@ class router
 
         $resource = self::prepare_resource($matched['resource']);
         
-        $this->_controller = self::create_controller($resource);
+        $this->_resource_api_controller = self::create_resource_api_controller($resource);
+        $this->_resource_api_model = self::create_resource_api_model($resource);
         $this->_params = $matched['parameters'];
         $this->_endpoint = $matched['endpoint'];
     }
@@ -72,9 +74,14 @@ class router
         return $resource;
     }
     
-    private function create_controller($resource)
+    private function create_resource_api_controller($resource)
     {
-        return sprintf('%s%s', $resource, static::CONTROLLER_PATH);
+        return sprintf('%s%s', $resource, static::RESOURCE_API_CONTROLLER);
+    }
+
+    private function create_resource_api_model($resource)
+    {
+        return sprintf('%s%s', $resource, static::RESOURCE_API_MODEL);
     }
 
     private function get_routes()
@@ -115,6 +122,6 @@ class router
     
     public function get_params() { return $this->_params; }
     public function get_method() { return $this->_endpoint; }
-    public function get_controller() { return $this->_controller; }
-    public function get_routing_info() { return [ 'controller' => $this->_controller, 'method' => $this->_endpoint, 'params' => $this->_params ]; }
+    public function get_resource_api_controller() { return $this->_resource_api_controller; }
+    public function get_resource_api_model() { return $this->_resource_api_model; }
 }
