@@ -21,6 +21,10 @@ tags:
     description: "Query for your favorite pokemon bosses!"
   - name: "User"
     description: "User stuff"
+  - name: "Pokemon egg chart"
+    description: "Available hatches"
+  - name: "Pokemon egg hatch"
+    description: "Hatched pokemons"
 
 paths:
   /user/login:
@@ -32,10 +36,6 @@ paths:
     $ref: "pokemon.yml#/get_by_id"
   /pokemon/shiny:
     $ref: "pokemon.yml#/get_pokemon_shiny"
-  /pokemon/hatch:
-    $ref: "pokemon.yml#/hatch"
-  /pokemon/catch:
-    $ref: "pokemon.yml#/catch"
 
   /pokemon/boss:
     $ref: "pokemon/boss.yml#/pokemon_boss"
@@ -45,4 +45,10 @@ paths:
     $ref: "pokemon/boss.yml#/get_by_id"
   /pokemon/boss/catch:
     $ref: "pokemon/boss.yml#/catch"
+  /pokemon/boss/catch/{id}:
+    $ref: "pokemon/boss.yml#/catch_by_user"
 
+  /pokemon/egg/chart:
+    $ref: "pokemon/egg.yml#/chart"
+  /pokemon/egg/hatch:
+    $ref: "pokemon/egg.yml#/hatch"

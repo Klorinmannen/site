@@ -25,6 +25,43 @@ components:
           type: integer
         boosted_max_cp:
           type: integer
+      example:
+        pokemon_id: 1
+        pokemon_name: Bulbasaur
+        dex_number: '#001' 
+        shiny: -1
+        pokemon_form: Normal
+        pokemon_tier: 1
+        pokemon_tier_name: Tier 1
+        min_cp: 590
+        max_cp: 637
+        boosted_min_cp: 737
+        boosted_max_cp: 796
+    BossBody:
+      type: object
+      properties:
+        pokemon_id:
+          type: integer
+        pokemon_form_id:
+          type: string
+        pokemon_boss_tier_id:
+          type: integer
+        min_cp:
+          type: integer
+        max_cp:
+          type: integer
+        boosted_min_cp:
+          type: integer
+        boosted_max_cp:
+          type: integer
+      example:
+        pokemon_id: 1
+        pokemon_form_id: 1
+        pokemon_boss_tier_id: 1 
+        min_cp: 590
+        max_cp: 637
+        boosted_min_cp: 737
+        boosted_max_cp: 796
 
 pokemon_boss:
   get:
@@ -50,15 +87,19 @@ pokemon_boss:
       - Pokemon bosses
     security:
       - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BossBody'
     responses:
       '200':
-        description: A json object of the boss with the new data
+        description: A json object of the updated boss
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Boss'
+              $ref: '#/components/schemas/Boss'
   post:
     operationId: add
     summary: Adds new pokemon as a boss
@@ -66,15 +107,19 @@ pokemon_boss:
       - Pokemon bosses
     security:
       - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BossBody'
     responses:
       '200':
         description: A json object of the new pokemon boss
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Boss'
+              $ref: '#/components/schemas/Boss'
 
 get_boss_shiny:
   get:
@@ -108,6 +153,7 @@ get_by_id:
         required: true
         schema:
           type: integer
+          example: 327
         description: pokedex id
     responses:
       '200':
@@ -115,14 +161,12 @@ get_by_id:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Boss'
+              $ref: '#/components/schemas/Boss'
 
 catch:
   post:
     operationId: add_new_catch  
-    summary: Add new caught boss by user id
+    summary: Add caught boss
     tags:
       - Pokemon bosses
     security:
@@ -133,6 +177,27 @@ catch:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Boss'
+              $ref: '#/components/schemas/Boss'
+catch_by_user:
+  get:
+    operationId: get_by_user_id  
+    summary: Returns a list of pokemon bosses by user id
+    tags:
+      - Pokemon bosses
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 12
+        description: user id
+    responses:
+      '200':
+        description: A json object list of pokemon bosses
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Boss'
