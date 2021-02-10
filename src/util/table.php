@@ -198,13 +198,22 @@ class table
         self::echo_sql();
         return $this;
     }
-
+    
     // Shorthand for query()
     public function q(bool $query = true)
     {
         return self::query($query);
     }
-    
+
+    // Some idea, use together with insert()
+    public function requery($key_field)
+    {
+        $id = self::query();
+        self::where([$key_field => $id]);
+        self::select($this->_fields);
+        return self::query();
+    }
+
     private function create_select_fields_and_params($fields)
     {
         $this->_select = static::DEFAULT_SELECT;
@@ -291,13 +300,15 @@ class table
         $parts = [];
         if (is_array($order_by)) {
             foreach ($order_by as $order => $field) {
-                $part = $field;
                 switch ($order) {
                 case 'ASC':
                 case 'asc':
+                    $part = sprintf('%s ASC', $field);
+                    break;
+                    
                 case 'DESC';
                 case 'desc':
-                    $part = sprintf('%s %s', $field, $order_sort);
+                    $part = sprintf('%s DESC', $field);
                     break;
                 }
                 $parts[] = $part;
