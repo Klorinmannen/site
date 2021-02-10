@@ -10,33 +10,33 @@ class model
         $this->_table = table('Pokemon');
     }
 
-    public function get_list(array $fields = [])
+    public function get_list(array $fields)
     {
-        return $this->_table->select($fields)->query();
+        return $this->_table->select($fields)->where('Active <> 0')->query();
     }
 
-    public function get_shiny_list(array $fields = [])
+    public function get_shiny_list(array $fields)
     {
-        return $this->_table->select($fields)->where('Shiny <> 0')->query();
+        return $this->_table->select($fields)->where('Shiny <> 0 AND Active <> 0')->query();
     }
     
-    public function get_by_id(int $id, array $fields = [])
+    public function get_by_id(int $id, array $fields)
     {
-        return $this->_table->select($fields)->where(['PokemonID' => $id])->query();
+        return $this->_table->select($fields)->where("PokemonID = $id AND Active <> 0")->query();
     }
 
-    public function get_by_name(string $name, array $fields = [])
+    public function get_by_name(string $name, array $fields)
     {
-        return $this->_table->select($fields)->where(['Name' => $name])->query();
+        return $this->_table->select($fields)->where("Name = $name AND Active <> 0")->query();
     }
 
-    public function insert(array $pokemon = [])
+    public function add_new(array $data)
     {
-        return $this->_table->insert($pokemon)->query();
+        return $this->_table->insert($data)->query();
     }
 
-    public function update_by_id(int $pokemon_id, array $pokemon = [])
+    public function update_by_id(int $id, array $data)
     {
-        return $this->_table->update($pokemon)->where(['PokemonID' => $pokemon_id])->query();
+        return $this->_table->update($data)->where(['PokemonID' => $id])->query();
     }
 }

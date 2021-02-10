@@ -29,6 +29,11 @@ class model
         return $this->_table->get($fields)->where("PokemonBossID = $id AND PokemonBoss.Active <> 0")->query();
     }
 
+    public function get_by_pokemon_id(int $id, array $fields)
+    {
+        return $this->_table->get($fields)->where("PokemonBoss.PokemonID = $id AND PokemonBoss.Active <> 0")->query();
+    }
+
     public function update_by_id(int $id, array $data)
     {
         return $this->_table->update($data)->where(['PokemonBossID' => $id])->query();

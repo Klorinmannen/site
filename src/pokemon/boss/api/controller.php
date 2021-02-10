@@ -14,8 +14,7 @@ class controller extends \api\controller
                                 'Pokemon.Name' => 'pokemon_name',
                                 'Pokemon.DexID' => 'pokemon_dex_number' ];
 
-    public const FIELDS = [ 'PokemonBossID' => 'pokemon_boss_id',
-                            'PokemonID' => 'pokemon_id',
+    public const FIELDS = [ 'PokemonID' => 'pokemon_id',
                             'PokemonBossTierID' => 'pokemon_boss_tier_id',
                             'PokemonFormID' => 'pokemon_form_id',
                             'MinCP' => 'min_cp',
@@ -60,15 +59,48 @@ class controller extends \api\controller
         if (!$pokemon_boss_id = validate_array_key_id('pokemon_boss_id', $data))
             throw new \Exception('Missing pokemon boss id', 400);
         
-        $to_update = [];
+        $new_data = [];
         foreach (static::FIELDS as $db_field => $code_field)
             if (isset($data[$code_field]))
-                $to_update[$db_field] = $data[$code_field];
+                $new_data[$db_field] = $data[$code_field];
 
-        if (!$rows_affected = $this->_model->update($id, $to_update))
+        if (!$new_data)
+            return [];        
+        if (!$rows_affected = $this->_model->update_by_id($pokemon_boss_id, $new_data))
             return [];
-            
-        return $this->_model->get_by_id($pokemon_boss_id, static::GET_FIELDS);
+
+        $boss = $this->_model->get_by_id($pokemon_boss_id, static::GET_FIELDS);
+        return self::prepare_response($boss);
+    }
+
+    public function insert()
+    {
+        $data = $this->_data;
+
+        if (!$pokemon_id = validate_array_key_id('pokemon_id', $data))
+            throw new \Exception('Missing pokemon boss id', 400);
+
+        if ($pokemon_boss_exists = $this->_model->get_by_pokemon_id($pokemon_id, static::GET_FIELDS))
+            throw new \Exception('Pokemon boss is already in database, did you mean to patch?', 400);
+        
+        if (!$pokemon_boss_tier_id = validate_array_key_id('pokemon_boss_tier_id', $data))
+            throw new \Exception('Missing pokemon boss tier id', 400);
+
+        if (!$pokemon_form_id = validate_array_key_id('pokemon_form_id', $data))
+            throw new \Exception('Missing pokemon boss form id', 400);
+        
+        $new_data = [];
+        foreach (static::FIELDS as $db_field => $code_field)
+            if (isset($data[$code_field]))
+                $new_data[$db_field] = $data[$code_field];
+
+        if (!$new_data)
+            return [];
+        if (!$pokemon_boss_id = $this->_model->add_new($pokemon_boss_id, $new_data))
+            return [];
+                
+        $boss = $this->_model->get_by_id($pokemon_boss_id, static::GET_FIELDS);
+        return self::prepare_response($boss);
     }
     
     public function prepare_response($data)
